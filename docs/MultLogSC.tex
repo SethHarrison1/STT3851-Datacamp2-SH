@@ -1,0 +1,1671 @@
+\documentclass[]{book}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Multiple and Logistic Regression},
+            pdfauthor={Your Name Here},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{\href{https://www.datacamp.com/courses/multiple-and-logistic-regression}{Multiple
+and Logistic Regression}}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{\href{https://your_username.github.io/}{Your Name Here}}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{Last compiled: Aug 06, 2019}
+
+\usepackage{booktabs}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\chapter{Prerequisites}\label{prerequisites}
+
+This material is from the \href{https://www.datacamp.com}{DataCamp}
+course
+\href{https://www.datacamp.com/courses/multiple-and-logistic-regression}{Multiple
+and Logistic Regression} by Ben Baumer. Before using this material, the
+reader should have completed and be comfortable with the material in the
+DataCamp module
+\href{https://www.datacamp.com/courses/correlation-and-regression}{Correlation
+and Regression}.
+
+Reminder to self: each \texttt{*.Rmd} file contains one and only one
+chapter, and a chapter is defined by the first-level heading
+\texttt{\#}.
+
+\chapter{Parallel Slopes}\label{parallel-slopes}
+
+In this chapter you'll learn about the class of linear models called
+``parallel slopes models.'' These include one numeric and one
+categorical explanatory variable.
+
+\section{Fitting a parallel slopes
+model}\label{fitting-a-parallel-slopes-model}
+
+We use the \texttt{lm()} function to fit linear models to data. In this
+case, we want to understand how the price of MarioKart games sold at
+auction varies as a function of not only the number of wheels included
+in the package, but also whether the item is new or used. Obviously, it
+is expected that you might have to pay a premium to buy these new. But
+how much is that premium? Can we estimate its value after
+\emph{controlling for the number of wheels}?
+
+We will fit a parallel slopes model using \texttt{lm()}. In addition to
+the \texttt{data} argument, \texttt{lm()} needs to know which variables
+you want to include in your regression model, and how you want to
+include them. It accomplishes this using a \texttt{formula} argument. A
+simple linear regression formula looks like
+\texttt{y\ \textasciitilde{}\ x}, where \texttt{y} is the name of the
+response variable, and \texttt{x} is the name of the explanatory
+variable. Here, we will simply extend this formula to include multiple
+explanatory variables. A parallel slopes model has the form
+\texttt{y\ \textasciitilde{}\ x\ +\ z}, where \texttt{z} is a
+categorical explanatory variable, and \texttt{x} is a numerical
+explanatory variable.
+
+The output from \texttt{lm()} is a model object, which when printed,
+will show the fitted coefficients.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  The dataset \texttt{marioKart} is already loaded for you. Explore the
+  data using \texttt{glimpse()} or \texttt{str()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(openintro)}
+\KeywordTok{data}\NormalTok{(marioKart)}
+\KeywordTok{glimpse}\NormalTok{(marioKart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Observations: 143
+Variables: 12
+$ ID         <dbl> 150377422259, 260483376854, 320432342985, 280405224...
+$ duration   <int> 3, 7, 3, 3, 1, 3, 1, 1, 3, 7, 1, 1, 1, 1, 7, 7, 3, ...
+$ nBids      <int> 20, 13, 16, 18, 20, 19, 13, 15, 29, 8, 15, 15, 13, ...
+$ cond       <fct> new, used, new, new, new, new, used, new, used, use...
+$ startPr    <dbl> 0.99, 0.99, 0.99, 0.99, 0.01, 0.99, 0.01, 1.00, 0.9...
+$ shipPr     <dbl> 4.00, 3.99, 3.50, 0.00, 0.00, 4.00, 0.00, 2.99, 4.0...
+$ totalPr    <dbl> 51.55, 37.04, 45.50, 44.00, 71.00, 45.00, 37.02, 53...
+$ shipSp     <fct> standard, firstClass, firstClass, standard, media, ...
+$ sellerRate <int> 1580, 365, 998, 7, 820, 270144, 7284, 4858, 27, 201...
+$ stockPhoto <fct> yes, yes, no, yes, yes, yes, yes, yes, yes, no, yes...
+$ wheels     <int> 1, 1, 1, 1, 2, 0, 0, 2, 1, 1, 2, 2, 2, 2, 1, 0, 1, ...
+$ title      <fct> "~~ Wii MARIO KART &amp; WHEEL ~ NINTENDO Wii ~ BRA...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Or}
+\CommentTok{# str(marioKart)}
+\CommentTok{# Data munging to agree with DataCamp mario_kart}
+\NormalTok{mario_kart <-}\StringTok{ }\NormalTok{marioKart }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(totalPr }\OperatorTok{<}\StringTok{ }\DecValTok{100}\NormalTok{)}
+\KeywordTok{str}\NormalTok{(mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+'data.frame':   141 obs. of  12 variables:
+ $ ID        : num  1.5e+11 2.6e+11 3.2e+11 2.8e+11 1.7e+11 ...
+ $ duration  : int  3 7 3 3 1 3 1 1 3 7 ...
+ $ nBids     : int  20 13 16 18 20 19 13 15 29 8 ...
+ $ cond      : Factor w/ 2 levels "new","used": 1 2 1 1 1 1 2 1 2 2 ...
+ $ startPr   : num  0.99 0.99 0.99 0.99 0.01 ...
+ $ shipPr    : num  4 3.99 3.5 0 0 4 0 2.99 4 4 ...
+ $ totalPr   : num  51.5 37 45.5 44 71 ...
+ $ shipSp    : Factor w/ 8 levels "firstClass","media",..: 6 1 1 6 2 6 6 8 5 1 ...
+ $ sellerRate: int  1580 365 998 7 820 270144 7284 4858 27 201 ...
+ $ stockPhoto: Factor w/ 2 levels "no","yes": 2 2 1 2 2 2 2 2 2 1 ...
+ $ wheels    : int  1 1 1 1 2 0 0 2 1 1 ...
+ $ title     : Factor w/ 80 levels " Mario Kart Wii with Wii Wheel for Wii (New)",..: 80 60 22 7 4 19 34 5 79 70 ...
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{save}\NormalTok{(mario_kart,}\DataTypeTok{file =} \StringTok{"./Data/mario_kart.RData"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a parallel slopes model for total price as a
+  function of the number of wheels and the condition of the item. Use
+  the argument \texttt{data} to specify the dataset you're using.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# fit parallel slopes}
+\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Reasoning about two
+intercepts}\label{reasoning-about-two-intercepts}
+\addcontentsline{toc}{subsection}{Reasoning about two intercepts}
+
+The \texttt{marioKart} data contains several other variables. The
+\texttt{totalPr}, \texttt{startPr}, and \texttt{shipPr} variables are
+numeric, while the \texttt{cond} and \texttt{stockPhoto} variables are
+categorical.
+
+Which formula will result in a parallel slopes model?
+
+\begin{itemize}
+\item
+  \texttt{totalPr\ \textasciitilde{}\ startPr\ +\ shipPr}
+\item
+  \texttt{cond\ \textasciitilde{}\ startPr\ +\ stockPhoto}
+\item
+  \textbf{\texttt{totalPr\ \textasciitilde{}\ shipPr\ +\ stockPhoto}}
+\item
+  \texttt{totalPr\ \textasciitilde{}\ cond}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{\texorpdfstring{Using \texttt{geom\_line()} and
+\texttt{augment()}}{Using geom\_line() and augment()}}\label{using-geom_line-and-augment}
+
+Parallel slopes models are so-named because we can visualize these
+models in the data space as not one line, but two parallel lines. To do
+this, we'll draw two things:
+
+\begin{itemize}
+\item
+  a scatterplot showing the data, with color separating the points into
+  groups
+\item
+  a line for each value of the categorical variable
+\end{itemize}
+
+Our plotting strategy is to compute the fitted values, plot these, and
+connect the points to form a line. The \texttt{augment()} function from
+the \texttt{broom} package provides an easy way to add the fitted values
+to our data frame, and the \texttt{geom\_line()} function can then use
+that data frame to plot the points and connect them.
+
+Note that this approach has the added benefit of automatically coloring
+the lines appropriately to match the data.
+
+You already know how to use \texttt{ggplot()} and \texttt{geom\_point()}
+to make the scatterplot. The only twist is that now you'll pass your
+\texttt{augment()}-ed model as the data argument in your
+\texttt{ggplot()} call. When you add your \texttt{geom\_line()}, instead
+of letting the \texttt{y} aesthetic inherit its values from the
+\texttt{ggplot()} call, you can set it to the \texttt{.fitted} column of
+the \texttt{augment()}-ed model. This has the advantage of automatically
+coloring the lines for you.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-1}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The parallel slopes model \texttt{mod} relating total price to the
+number of wheels and condition is already in your workspace.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\DataTypeTok{formula =}\NormalTok{ totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{augment()} the model \texttt{mod} and explore the returned
+  data frame using \texttt{glimpse()}. Notice the new variables that
+  have been created.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(broom)}
+\NormalTok{augmented_mod <-}\StringTok{ }\KeywordTok{augment}\NormalTok{(mod)}
+\KeywordTok{glimpse}\NormalTok{(augmented_mod)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Observations: 141
+Variables: 10
+$ totalPr    <dbl> 51.55, 37.04, 45.50, 44.00, 71.00, 45.00, 37.02, 53...
+$ wheels     <int> 1, 1, 1, 1, 2, 0, 0, 2, 1, 1, 2, 2, 2, 2, 1, 0, 1, ...
+$ cond       <fct> new, used, new, new, new, new, used, new, used, use...
+$ .fitted    <dbl> 49.60260, 44.01777, 49.60260, 49.60260, 56.83544, 4...
+$ .se.fit    <dbl> 0.7087865, 0.5465195, 0.7087865, 0.7087865, 0.67645...
+$ .resid     <dbl> 1.9473995, -6.9777674, -4.1026005, -5.6026005, 14.1...
+$ .hat       <dbl> 0.02103158, 0.01250410, 0.02103158, 0.02103158, 0.0...
+$ .sigma     <dbl> 4.902339, 4.868399, 4.892414, 4.881308, 4.750591, 4...
+$ .cooksd    <dbl> 1.161354e-03, 8.712334e-03, 5.154337e-03, 9.612441e...
+$ .std.resid <dbl> 0.40270893, -1.43671086, -0.84838977, -1.15857953, ...
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Draw the scatterplot and save it as \texttt{data\_space} by passing
+  the \texttt{augment()}-ed model to \texttt{ggplot()} and using
+  \texttt{geom\_point()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# scatterplot, with color}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ augmented_mod, }
+                     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ wheels, }\DataTypeTok{y =}\NormalTok{ totalPr, }
+                         \DataTypeTok{color =}\NormalTok{ cond)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_line()} once to add two parallel lines corresponding
+  to our model.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# single call to geom_line()}
+\NormalTok{data_space }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ wheels, }\DataTypeTok{y =}\NormalTok{ .fitted)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-7-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Intercept interpretation}\label{intercept-interpretation}
+\addcontentsline{toc}{subsection}{Intercept interpretation}
+
+Recall that the \texttt{cond} variable is either \texttt{new} or
+\texttt{used}. Here are the fitted coefficients from your model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  
+\end{verbatim}
+
+Choose the correct interpretation of the coefficient on
+\texttt{condused}:
+
+\begin{itemize}
+\item
+  For each additional wheel, the expected price of a used MarioKart is
+  \$5.58 lower.
+\item
+  \textbf{The expected price of a used MarioKart is \$5.58 less than
+  that of a new one with the same number of wheels.}
+\item
+  The expected price of a new MarioKart is \$5.58 less than that of a
+  used one with the same number of wheels.
+\item
+  The used MarioKarts are always \$5.58 cheaper.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Common slope
+interpretation}\label{common-slope-interpretation}
+\addcontentsline{toc}{subsection}{Common slope interpretation}
+
+Recall the fitted coefficients from our model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  
+\end{verbatim}
+
+Choose the correct interpretation of the slope coefficient:
+
+\begin{itemize}
+\item
+  \textbf{For each additional wheel, the expected price of a MarioKart
+  increases by \$7.23 regardless of whether it is new or used.}
+\item
+  For each additional wheel, the expected price of a new MarioKart
+  increases by \$7.23.
+\item
+  The expected price of a used MarioKart is \$5.59 less than that of a
+  new one with the same number of wheels.
+\item
+  You should always expect to pay \$42.37 for a MarioKart.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Syntax from math}\label{syntax-from-math}
+
+The \texttt{babies} data set contains observations about the birthweight
+and other characteristics of children born in the San Francisco Bay area
+from 1960--1967.
+
+We would like to build a model for birthweight as a function of the
+mother's age and whether this child was her first
+(\texttt{parity\ ==\ 0}). Use the mathematical specification below to
+code the model in R.
+
+\[birthweight=\beta_0 + \beta_1 \cdot age + \beta_2 \cdot parity + \varepsilon\]
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-2}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The birthweight variable is recorded in the column \texttt{bwt}.
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to build the parallel slopes model specified above.
+  It's not necessary to use \texttt{factor()} in this case as the
+  variable \texttt{parity} is coded using binary numeric values.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# build model}
+\KeywordTok{lm}\NormalTok{(bwt }\OperatorTok{~}\StringTok{ }\NormalTok{age }\OperatorTok{+}\StringTok{ }\NormalTok{parity, }\DataTypeTok{data =}\NormalTok{ babies)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = bwt ~ age + parity, data = babies)
+
+Coefficients:
+(Intercept)          age       parity  
+  118.27782      0.06315     -1.65248  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Syntax from plot}\label{syntax-from-plot}
+
+This time, we'd like to build a model for birthweight as a function of
+the length of gestation and the mother's smoking status. Use Figure
+\ref{fig:SmokP1} to inform your model specification.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ babies, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ gestation, }\DataTypeTok{y =}\NormalTok{ bwt, }\DataTypeTok{color =} \KeywordTok{factor}\NormalTok{(smoke))) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{MultLogSC_files/figure-latex/SmokP1-1} 
+
+}
+
+\caption{`bwt` versus `gestation`}\label{fig:SmokP1}
+\end{figure}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-3}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to build a parallel slopes model implied by the
+  plot. It's not necessary to use \texttt{factor()} in this case either.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# build model}
+\KeywordTok{lm}\NormalTok{(bwt }\OperatorTok{~}\StringTok{ }\NormalTok{gestation }\OperatorTok{+}\StringTok{ }\NormalTok{smoke, }\DataTypeTok{data =}\NormalTok{ babies)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = bwt ~ gestation + smoke, data = babies)
+
+Coefficients:
+(Intercept)    gestation        smoke  
+    -0.9317       0.4429      -8.0883  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\chapter{Evaluating and extending parallel slopes
+model}\label{evaluating-and-extending-parallel-slopes-model}
+
+This chapter covers model evaluation. By looking at different properties
+of the model, including the adjusted R-squared, you'll learn to compare
+models so that you can select the best one. You'll also learn about
+interaction terms in linear models.
+
+\section{R-squared vs.~adjusted
+R-squared}\label{r-squared-vs.adjusted-r-squared}
+
+Two common measures of how well a model fits to data are \(R^2\) (the
+coefficient of determination) and the adjusted \(R^2\). The former
+measures the percentage of the variability in the response variable that
+is explained by the model. To compute this, we define
+
+\[R^2 = 1 − \frac{SSE}{SST},\] where \(SSE\) and \(SST\) are the sum of
+the squared residuals, and the total sum of the squares, respectively.
+One issue with this measure is that the \(SSE\) can only decrease as new
+variable are added to the model, while the \(SST\) depends only on the
+response variable and therefore is not affected by changes to the model.
+This means that you can increase \(R^2\) by adding any additional
+variable to your model---even random noise.
+
+The adjusted \(R^2\) includes a term that penalizes a model for each
+additional explanatory variable (where \(p\) is the number of
+explanatory variables).
+
+\[R^2_{\text{adj}} = 1 − \frac{SSE}{SST}\cdot\frac{n-1}{n-p-1},\]
+
+We can see both measures in the output of the \texttt{summary()}
+function on our model object.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-4}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{load}\NormalTok{(}\StringTok{"./Data/mario_kart.RData"}\NormalTok{)}
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{summary()} to compute \(R^2\) and adjusted \(R^2\) on the
+  model object called \texttt{mod}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# R^2 and adjusted R^2}
+\KeywordTok{summary}\NormalTok{(mod)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.0078  -3.0754  -0.8254   2.9822  14.1646 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  42.3698     1.0651  39.780  < 2e-16 ***
+wheels        7.2328     0.5419  13.347  < 2e-16 ***
+condused     -5.5848     0.9245  -6.041 1.35e-08 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.887 on 138 degrees of freedom
+Multiple R-squared:  0.7165,    Adjusted R-squared:  0.7124 
+F-statistic: 174.4 on 2 and 138 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The \(R^2\) value for \texttt{mod} is 0.7165182, and the
+\(R^2_{\text{adj}}\) value is 0.7124098.
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{mutate()} and \texttt{rnorm()} to add a new variable
+  called \texttt{noise} to the \texttt{mario\_kart} data set that
+  consists of random noise. Save the new dataframe as
+  \texttt{mario\_kart\_noisy}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add random noise}
+\KeywordTok{set.seed}\NormalTok{(}\DecValTok{34}\NormalTok{)}
+\CommentTok{# add random noise}
+\NormalTok{mario_kart_noisy <-}\StringTok{ }\NormalTok{mario_kart }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{noise =} \KeywordTok{rnorm}\NormalTok{(}\KeywordTok{nrow}\NormalTok{(mario_kart)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a model that includes \texttt{wheels},
+  \texttt{cond}, and the random noise term.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute new model}
+\NormalTok{mod2 <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{cond }\OperatorTok{+}\StringTok{ }\NormalTok{noise, }\DataTypeTok{data =}\NormalTok{ mario_kart_noisy)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{summary()} to compute \(R^2\) and adjusted \(R^2\) on the
+  new model object. Did the value of \(R^2\) increase? \textbf{Yes} What
+  about adjusted \(R^2\)? \textbf{It also increased.} \textbf{Adding
+  random noise increase both \(R^2\) and \(R^2_{\text{adj}}\).}
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# new R^2 and adjusted R^2}
+\KeywordTok{summary}\NormalTok{(mod2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ wheels + cond + noise, data = mario_kart_noisy)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.3256  -3.1692  -0.7492   2.8731  14.1293 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  42.2788     1.0659  39.664  < 2e-16 ***
+wheels        7.2310     0.5410  13.367  < 2e-16 ***
+condused     -5.4003     0.9354  -5.774 4.97e-08 ***
+noise        -0.4930     0.4059  -1.215    0.227    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.879 on 137 degrees of freedom
+Multiple R-squared:  0.7195,    Adjusted R-squared:  0.7134 
+F-statistic: 117.2 on 3 and 137 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Prediction}\label{prediction}
+
+Once we have fit a regression model, we can use it to make predictions
+for unseen observations or retrieve the fitted values. Here, we explore
+two methods for doing the latter.
+
+A traditional way to return the fitted values (i.e.~the \(\hat{y}\)'s)
+is to run the \texttt{predict()} function on the model object. This will
+return a vector of the fitted values. Note that \texttt{predict()} will
+take an optional \texttt{newdata} argument that will allow you to make
+predictions for observations that are not in the original data.
+
+A newer alternative is the \texttt{augment()} function from the
+\texttt{broom} package, which returns a \texttt{data.frame} with the
+response variable (\(y\)), the relevant explanatory variables (the
+\(x\)'s), the fitted value (\(\hat{y}\)) and some information about the
+residuals (\(\hat{\varepsilon}\)). \texttt{augment()} will also take a
+\texttt{newdata} argument that allows you to make predictions.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-5}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The fitted model \texttt{mod} is already in your environment.
+
+\begin{itemize}
+\tightlist
+\item
+  Compute the fitted values of the model as a vector using
+  \texttt{predict()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# return a vector}
+\NormalTok{VEC <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(mod)}
+\KeywordTok{head}\NormalTok{(VEC)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       1        2        3        4        5        6 
+49.60260 44.01777 49.60260 49.60260 56.83544 42.36976 
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Compute the fitted values of the model as one column in a
+  \texttt{data.frame} using \texttt{augment()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# return a data frame}
+\NormalTok{DF <-}\StringTok{ }\NormalTok{broom}\OperatorTok{::}\KeywordTok{augment}\NormalTok{(mod)}
+\KeywordTok{head}\NormalTok{(DF)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 6 x 10
+  totalPr wheels cond  .fitted .se.fit .resid   .hat .sigma .cooksd
+    <dbl>  <int> <fct>   <dbl>   <dbl>  <dbl>  <dbl>  <dbl>   <dbl>
+1    51.6      1 new      49.6   0.709   1.95 0.0210   4.90 0.00116
+2    37.0      1 used     44.0   0.547  -6.98 0.0125   4.87 0.00871
+3    45.5      1 new      49.6   0.709  -4.10 0.0210   4.89 0.00515
+4    44        1 new      49.6   0.709  -5.60 0.0210   4.88 0.00961
+5    71        2 new      56.8   0.676  14.2  0.0192   4.75 0.0557 
+6    45        0 new      42.4   1.07    2.63 0.0475   4.90 0.00505
+# ... with 1 more variable: .std.resid <dbl>
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Thought experiments}\label{thought-experiments}
+\addcontentsline{toc}{subsection}{Thought experiments}
+
+Suppose that after going apple picking you have 12 apples left over. You
+decide to conduct an experiment to investigate how quickly they will rot
+under certain conditions. You place six apples in a cool spot in your
+basement, and leave the other six on the window sill in the kitchen.
+Every week, you estimate the percentage of the surface area of the apple
+that is rotten or moldy.
+
+Consider the following models:
+
+\[rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp,\]
+
+and
+
+\[rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp + \beta_3 \cdot temp \cdot t,\]
+
+where \(t\) is time, measured in weeks, and \(temp\) is a binary
+variable indicating either cool or warm.
+
+If you decide to keep the interaction term present in the second model,
+you are implicitly assuming that:
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  The amount of rot will vary based on the temperature.
+\item
+  The amount of rot will vary based on the temperature, after
+  controlling for the length of time they have been left out.
+\item
+  \textbf{The rate at which apples rot will vary based on the
+  temperature.}
+\item
+  Time and temperature are independent.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Fitting a model with
+interaction}\label{fitting-a-model-with-interaction}
+
+Including an interaction term in a model is easy---we just have to tell
+\texttt{lm()} that we want to include that new variable. An expression
+of the form
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(y }\OperatorTok{~}\StringTok{ }\NormalTok{x }\OperatorTok{+}\StringTok{ }\NormalTok{z }\OperatorTok{+}\StringTok{ }\NormalTok{x}\OperatorTok{:}\NormalTok{z, }\DataTypeTok{data =}\NormalTok{ mydata)}
+\end{Highlighting}
+\end{Shaded}
+
+will do the trick. The use of the colon (\texttt{:}) here means that the
+interaction between \texttt{x} and \texttt{z} will be a third term in
+the model.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-6}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The data frame \texttt{mario\_kart} is already loaded in your workspace.
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a model for the price of a MarioKart as a
+  function of its condition and the duration of the auction, with
+  interaction.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# include interaction}
+\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{cond }\OperatorTok{+}\StringTok{ }\NormalTok{duration }\OperatorTok{+}\StringTok{ }\NormalTok{cond}\OperatorTok{:}\NormalTok{duration, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ cond + duration + cond:duration, data = mario_kart)
+
+Coefficients:
+      (Intercept)           condused           duration  
+           58.268            -17.122             -1.966  
+condused:duration  
+            2.325  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Visualizing interaction
+models}\label{visualizing-interaction-models}
+
+Interaction allows the slope of the regression line in each group to
+vary. In this case, this means that the relationship between the final
+price and the length of the auction is moderated by the condition of
+each item.
+
+Interaction models are easy to visualize in the data space with
+\texttt{ggplot2} because they have the same coefficients as if the
+models were fit independently to each group defined by the level of the
+categorical variable. In this case, new and used MarioKarts each get
+their own regression line. To see this, we can set an aesthetic (e.g.
+\texttt{color}) to the categorical variable, and then add a
+\texttt{geom\_smooth()} layer to overlay the regression line for each
+color.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section*{Exercise}\label{exercise-7}
+\addcontentsline{toc}{section}{Exercise}
+
+The dataset \texttt{mario\_kart} is already loaded in your workspace.
+
+\begin{itemize}
+\tightlist
+\item
+  Use the \texttt{color} aesthetic and the \texttt{geom\_smooth()}
+  function to plot the interaction model between duration and condition
+  in the data space. Make sure you set the \texttt{method} and
+  \texttt{se} arguments of \texttt{geom\_smooth()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# interaction plot}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ mario_kart, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ totalPr, }\DataTypeTok{x =}\NormalTok{ duration, }\DataTypeTok{color =}\NormalTok{ cond)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-21-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  How does the interaction model differ from the parallel slopes model?
+  \textbf{Class discussion}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Consequences of Simpson's
+paradox}\label{consequences-of-simpsons-paradox}
+
+In the simple linear regression model for average SAT score,
+(\texttt{total}) as a function of average teacher salary
+(\texttt{salary}), the fitted coefficient was -5.02 points per thousand
+dollars. This suggests that for every additional thousand dollars of
+salary for teachers in a particular state, the expected SAT score for a
+student from that state is about 5 points lower.
+
+In the model that includes the percentage of students taking the SAT,
+the coefficient on \texttt{salary} becomes 1.84 points per thousand
+dollars. Choose the correct interpretation of this slope coefficient.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{SAT <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"https://assets.datacamp.com/production/repositories/845/datasets/1a12a19d2cec83ca0b58645689987e2025d91383/SAT.csv"}\NormalTok{)}
+\KeywordTok{lm}\NormalTok{(total }\OperatorTok{~}\StringTok{ }\NormalTok{salary, }\DataTypeTok{data =}\NormalTok{ SAT)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = total ~ salary, data = SAT)
+
+Coefficients:
+(Intercept)       salary  
+  1.871e+03   -5.019e-03  
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{SAT_wbin <-}\StringTok{ }\NormalTok{SAT }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{sat_bin =} \KeywordTok{cut}\NormalTok{(sat_pct, }\DecValTok{3}\NormalTok{))}
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(}\DataTypeTok{formula =}\NormalTok{ total }\OperatorTok{~}\StringTok{ }\NormalTok{salary }\OperatorTok{+}\StringTok{ }\NormalTok{sat_bin, }\DataTypeTok{data =}\NormalTok{ SAT_wbin)}
+\NormalTok{mod}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = total ~ salary + sat_bin, data = SAT_wbin)
+
+Coefficients:
+     (Intercept)            salary    sat_bin(33,63]  sat_bin(63,93.1]  
+      1597.10773           0.00184        -191.45221        -217.73480  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  For every additional thousand dollars of salary for teachers in a
+  particular state, the expected SAT score for a student from that state
+  is about 2 points lower.
+\item
+  \textbf{For every additional thousand dollars of salary for teachers
+  in a particular state, the expected SAT score for a student from that
+  state is about 2 points higher, after controlling for the percentage
+  of students taking the SAT.}
+\item
+  The average SAT score in richer states is about 2 points higher.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Simpson's paradox in action}\label{simpsons-paradox-in-action}
+
+A mild version of
+\href{https://en.wikipedia.org/wiki/Simpson\%27s_paradox}{Simpson's
+paradox} can be observed in the MarioKart auction data. Consider the
+relationship between the final auction price and the length of the
+auction. It seems reasonable to assume that longer auctions would result
+in higher prices, since---other things being equal---a longer auction
+gives more bidders more time to see the auction and bid on the item.
+
+However, a simple linear regression model reveals the opposite: longer
+auctions are associated with lower final prices. The problem is that all
+other things are not equal. In this case, the new MarioKarts---which
+people pay a premium for---were mostly sold in one-day auctions, while a
+plurality of the used MarioKarts were sold in the standard seven-day
+auctions.
+
+Our simple linear regression model is misleading, in that it suggests a
+negative relationship between final auction price and duration. However,
+for the used MarioKarts, the relationship is positive.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-8}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The object \texttt{slr} is already defined for you.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{slr <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(mario_kart, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ totalPr, }\DataTypeTok{x =}\NormalTok{ duration)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \DecValTok{0}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{slr}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+
+{\centering \includegraphics{MultLogSC_files/figure-latex/slrP1-1} 
+
+}
+
+\caption{`totalPr` versus `duration`}\label{fig:slrP1}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  Fit a simple linear regression model for final auction price
+  (\texttt{totalPr}) as a function of duration (\texttt{duration}).
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# model with one slope}
+\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{duration, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ duration, data = mario_kart)
+
+Coefficients:
+(Intercept)     duration  
+     52.374       -1.317  
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{aes()} to add a color aesthetic that's mapped to the
+  condition variable to the \texttt{slr} object, shown in Figure
+  \ref{fig:slrP1}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# plot with two slopes}
+\NormalTok{slr }\OperatorTok{+}\StringTok{ }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ cond)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-24-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Which of the two groups is showing signs of Simpson's paradox?
+  \textbf{Class discussion}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\chapter{Multiple Regression}\label{multiple-regression}
+
+This chapter will show you how to add two, three, and even more numeric
+explanatory variables to a linear model.
+
+\section{Fitting a MLR model}\label{fitting-a-mlr-model}
+
+In terms of the R code, fitting a multiple linear regression model is
+easy: simply add variables to the model formula you specify in the
+\texttt{lm()} command.
+
+In a parallel slopes model, we had two explanatory variables: one was
+numeric and one was categorical. Here, we will allow both explanatory
+variables to be numeric.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{load}\NormalTok{(}\StringTok{"./Data/mario_kart.RData"}\NormalTok{)}
+\KeywordTok{str}\NormalTok{(mario_kart)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+'data.frame':   141 obs. of  12 variables:
+ $ ID        : num  1.5e+11 2.6e+11 3.2e+11 2.8e+11 1.7e+11 ...
+ $ duration  : int  3 7 3 3 1 3 1 1 3 7 ...
+ $ nBids     : int  20 13 16 18 20 19 13 15 29 8 ...
+ $ cond      : Factor w/ 2 levels "new","used": 1 2 1 1 1 1 2 1 2 2 ...
+ $ startPr   : num  0.99 0.99 0.99 0.99 0.01 ...
+ $ shipPr    : num  4 3.99 3.5 0 0 4 0 2.99 4 4 ...
+ $ totalPr   : num  51.5 37 45.5 44 71 ...
+ $ shipSp    : Factor w/ 8 levels "firstClass","media",..: 6 1 1 6 2 6 6 8 5 1 ...
+ $ sellerRate: int  1580 365 998 7 820 270144 7284 4858 27 201 ...
+ $ stockPhoto: Factor w/ 2 levels "no","yes": 2 2 1 2 2 2 2 2 2 1 ...
+ $ wheels    : int  1 1 1 1 2 0 0 2 1 1 ...
+ $ title     : Factor w/ 80 levels " Mario Kart Wii with Wii Wheel for Wii (New)",..: 80 60 22 7 4 19 34 5 79 70 ...
+\end{verbatim}
+
+The dataset \texttt{mario\_kart} is already loaded in your workspace.
+
+\begin{itemize}
+\tightlist
+\item
+  Fit a multiple linear regression model for total price as a function
+  of the duration of the auction and the starting price.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Fit the model using duration and startPr}
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{duration }\OperatorTok{+}\StringTok{ }\NormalTok{startPr, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\NormalTok{mod}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ duration + startPr, data = mario_kart)
+
+Coefficients:
+(Intercept)     duration      startPr  
+     51.030       -1.508        0.233  
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Tiling the plane}\label{tiling-the-plane}
+
+One method for visualizing a multiple linear regression model is to
+create a \href{https://en.wikipedia.org/wiki/Heat_map}{heatmap} of the
+fitted values in the plane defined by the two explanatory variables.
+This heatmap will illustrate how the model output changes over different
+combinations of the explanatory variables.
+
+This is a multistep process:
+
+\begin{itemize}
+\tightlist
+\item
+  First, create a grid of the possible pairs of values of the
+  explanatory variables. The grid should be over the actual range of the
+  data present in each variable. We've done this for you and stored the
+  result as a data frame called \texttt{grid}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grid <-}\StringTok{ }\KeywordTok{expand.grid}\NormalTok{(}\DataTypeTok{duration =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DataTypeTok{by =} \DecValTok{1}\NormalTok{), }\DataTypeTok{startPr =} \KeywordTok{seq}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\FloatTok{69.95}\NormalTok{, }\DataTypeTok{by =} \FloatTok{0.01}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\item
+  Use \texttt{augment()} with the \texttt{newdata} argument to find the
+  \(\hat{y}\)'s corresponding to the values in \texttt{grid}.
+\item
+  Add these to the \texttt{data\_space} plot by using the fill aesthetic
+  and \texttt{geom\_tile()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ mario_kart, }
+                     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ duration, }\DataTypeTok{y =}\NormalTok{ startPr)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ totalPr)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-28-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-9}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The model object \texttt{mod} is already in your workspace.
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{augment()} to create a \texttt{data.frame} that contains
+  the values the model outputs for each row of \texttt{grid}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add predictions to grid}
+\NormalTok{price_hats <-}\StringTok{ }\NormalTok{broom}\OperatorTok{::}\KeywordTok{augment}\NormalTok{(mod, }\DataTypeTok{newdata =}\NormalTok{ grid)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_tile} to illustrate these predicted values over the
+  \texttt{data\_space} plot. Use the \texttt{fill} aesthetic and set
+  \texttt{alpha\ =\ 0.5}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# tile the plane}
+\NormalTok{data_space }\OperatorTok{+}\StringTok{ }
+\StringTok{   }\KeywordTok{geom_tile}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ price_hats, }
+             \KeywordTok{aes}\NormalTok{(}\DataTypeTok{fill =}\NormalTok{ .fitted), }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-30-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Models in 3D}\label{models-in-3d}
+
+An alternative way to visualize a multiple regression model with two
+numeric explanatory variables is as a plane in three dimensions. This is
+possible in R using the \texttt{plotly} package.
+
+We have created three objects that you will need:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{x}: a vector of unique values of \texttt{duration}
+\item
+  \texttt{y}: a vector of unique values of \texttt{startPr}
+\item
+  \texttt{plane}: a matrix of the fitted values across all combinations
+  of \texttt{x} and \texttt{y}
+\end{itemize}
+
+Much like \texttt{ggplot()}, the \texttt{plot\_ly()} function will allow
+you to create a plot object with variables mapped to \texttt{x},
+\texttt{y}, and \texttt{z} aesthetics. The \texttt{add\_markers()}
+function is similar to \texttt{geom\_point()} in that it allows you to
+add points to your 3D plot.
+
+Note that \texttt{plot\_ly} uses the pipe (\texttt{\%\textgreater{}\%)}
+operator to chain commands together.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-10}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Run the \texttt{plot\_ly} command to draw 3D scatterplot for
+  \texttt{totalPr} as a function of duration and \texttt{startPr} by
+  mapping the \texttt{z} variable to the response and the \texttt{x} and
+  \texttt{y} variables to the explanatory variables. Duration should be
+  on the x-axis and starting price should be on the y-axis.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(plotly)}
+\CommentTok{# draw the 3D scatterplot}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{plot_ly}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ mario_kart, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{totalPr, }\DataTypeTok{x =} \OperatorTok{~}\NormalTok{duration, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{startPr, }\DataTypeTok{opacity =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_markers}\NormalTok{() }
+\NormalTok{p}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-31-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{add\_surface()} to draw a plane through the cloud of
+  points by setting \texttt{z\ =\ \textasciitilde{}plane}. See
+  \href{https://en.wikipedia.org/wiki/Outer_product}{wikipedia} for the
+  definition of an outer product. In what follows, we will use the R
+  function \texttt{outer()} to compute the values of \texttt{plane}.
+\end{itemize}
+
+\[\bf{u \otimes v} = \bf{uv^T}\]
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(mod)}\OperatorTok{$}\NormalTok{coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept) 51.0295070 1.17913685 43.277001 3.665684e-82
+duration    -1.5081260 0.25551997 -5.902184 2.644972e-08
+startPr      0.2329542 0.04363644  5.338525 3.755647e-07
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DataTypeTok{length =} \DecValTok{70}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\FloatTok{0.010}\NormalTok{, }\FloatTok{59.950}\NormalTok{, }\DataTypeTok{length =} \DecValTok{70}\NormalTok{)}
+\NormalTok{plane <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\KeywordTok{summary}\NormalTok{(mod)}\OperatorTok{$}\NormalTok{coef[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{] }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{summary}\NormalTok{(mod)}\OperatorTok{$}\NormalTok{coef[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}\StringTok{ }\KeywordTok{summary}\NormalTok{(mod)}\OperatorTok{$}\NormalTok{coef[}\DecValTok{3}\NormalTok{,}\DecValTok{1}\NormalTok{]}\OperatorTok{*}\NormalTok{b\})}
+\CommentTok{# draw the plane}
+\NormalTok{p }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{plane, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-32-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Coefficient magnitude}\label{coefficient-magnitude}
+\addcontentsline{toc}{subsection}{Coefficient magnitude}
+
+The coefficients from our model for the total auction price of
+MarioKarts as a function of auction duration and starting price are
+shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mod}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ duration + startPr, data = mario_kart)
+
+Coefficients:
+(Intercept)     duration      startPr  
+     51.030       -1.508        0.233  
+\end{verbatim}
+
+A colleague claims that these results imply that the duration of the
+auction is a more important determinant of final price than starting
+price, because the coefficient is larger. This interpretation is false
+because:
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  The coefficient on duration is negative.
+\item
+  Smaller coefficients are more important.
+\item
+  \textbf{The coefficients have different units (dollars per day and
+  dollars per dollar, respectively) and so they are not directly
+  comparable.}
+\item
+  The intercept coefficient is much bigger, so it is the most important
+  one.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Practicing interpretation}\label{practicing-interpretation}
+\addcontentsline{toc}{subsection}{Practicing interpretation}
+
+Fit a multiple regression model for the total auction price of an item
+in the \texttt{mario\_kart} data set as a function of the starting price
+and the duration of the auction. Compute the coefficients and choose the
+correct interpretation of the duration variable.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  \textbf{For each additional day the auction lasts, the expected final
+  price declines by \$1.51, after controlling for starting price.}
+\item
+  For each additional dollar of starting price, the expected final price
+  increases by \$0.23, after controlling for the duration of the
+  auction.
+\item
+  The duration of the auction is a more important determinant of final
+  price than starting price, because the coefficient is larger.
+\item
+  The average auction lasts 51 days.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Visualizing parallel planes}\label{visualizing-parallel-planes}
+
+By including the duration, starting price, and condition variables in
+our model, we now have two explanatory variables and one categorical
+variable. Our model now takes the geometric form of two parallel planes!
+
+The first plane corresponds to the model output when the condition of
+the item is \texttt{new}, while the second plane corresponds to the
+model output when the condition of the item is \texttt{used}. The planes
+have the same slopes along both the duration and starting price
+axes---it is the z-intercept that is different.
+
+Once again we have stored the \texttt{x} and \texttt{y} vectors for you.
+Since we now have two planes, there are matrix objects \texttt{plane0}
+and \texttt{plane1} stored for you as well.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modI <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{duration }\OperatorTok{+}\StringTok{ }\NormalTok{startPr }\OperatorTok{+}\StringTok{ }\NormalTok{cond, }\DataTypeTok{data =}\NormalTok{ mario_kart)}
+\KeywordTok{summary}\NormalTok{(modI)}\OperatorTok{$}\NormalTok{coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept) 53.3447530  1.0804915 49.370822 3.781243e-89
+duration    -0.6559841  0.2553503 -2.568957 1.127073e-02
+startPr      0.1981653  0.0382717  5.177855 7.835882e-07
+condused    -8.9493214  1.3237851 -6.760403 3.635333e-10
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plane0 <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\FloatTok{53.3447530} \OperatorTok{-}\FloatTok{0.6559841}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}\StringTok{ }
+\StringTok{                                      }\FloatTok{0.1981653}\OperatorTok{*}\NormalTok{b\})}
+\NormalTok{plane1 <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\FloatTok{53.3447530} \OperatorTok{-}\FloatTok{0.6559841}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}
+\StringTok{                                      }\FloatTok{0.1981653}\OperatorTok{*}\NormalTok{b }\OperatorTok{-}\StringTok{ }\FloatTok{8.9493214}\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-11}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{plot\_ly} to draw 3D scatterplot for \texttt{totalPr} as a
+  function of \texttt{duration}, \texttt{startPr}, and \texttt{cond} by
+  mapping the \texttt{z} variable to the response and the \texttt{x} and
+  \texttt{y} variables to the explanatory variables. Duration should be
+  on the x-axis and starting price should be on the y-axis. Use color to
+  represent \texttt{cond}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# draw the 3D scatterplot}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{plot_ly}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ mario_kart, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{totalPr, }\DataTypeTok{x =} \OperatorTok{~}\NormalTok{duration, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{startPr, }\DataTypeTok{opacity =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_markers}\NormalTok{(}\DataTypeTok{color =} \OperatorTok{~}\NormalTok{cond) }
+\NormalTok{p}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-35-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{add\_surface()} (twice) to draw two planes through the
+  cloud of points, one for new MarioKarts and another for used ones. Use
+  the objects \texttt{plane0} and \texttt{plane1}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# draw two planes}
+\NormalTok{p }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{plane0, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{plane1, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-36-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Parallel plane
+interpretation}\label{parallel-plane-interpretation}
+\addcontentsline{toc}{subsection}{Parallel plane interpretation}
+
+The coefficients from our parallel planes model is shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modI}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ duration + startPr + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)     duration      startPr     condused  
+    53.3448      -0.6560       0.1982      -8.9493  
+\end{verbatim}
+
+Choose the right interpretation of \(\beta_3\) (the coefficient on
+\texttt{condUsed}):
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  \textbf{The expected premium for new (relative to used) MarioKarts is
+  \$8.95, after controlling for the duration and starting price of the
+  auction.}
+\item
+  The expected premium for used (relative to new) MarioKarts is \$8.95,
+  after controlling for the duration and starting price of the auction.
+\item
+  For each additional day the auction lasts, the expected final price
+  declines by \$8.95, after controlling for starting price and
+  condition.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Interpretation of coefficient in a big
+model}\label{interpretation-of-coefficient-in-a-big-model}
+\addcontentsline{toc}{subsection}{Interpretation of coefficient in a big
+model}
+
+This time we have thrown even more variables into our model, including
+the number of bids in each auction (\texttt{nBids}) and the number of
+wheels. Unfortunately this makes a full visualization of our model
+impossible, but we can still interpret the coefficients.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modJ <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(totalPr }\OperatorTok{~}\StringTok{ }\NormalTok{duration }\OperatorTok{+}\StringTok{ }\NormalTok{startPr }\OperatorTok{+}\StringTok{ }\NormalTok{cond }\OperatorTok{+}\StringTok{ }\NormalTok{wheels }\OperatorTok{+}\StringTok{ }\NormalTok{nBids, }
+    \DataTypeTok{data =}\NormalTok{ mario_kart)}
+\NormalTok{modJ}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = totalPr ~ duration + startPr + cond + wheels + nBids, 
+    data = mario_kart)
+
+Coefficients:
+(Intercept)     duration      startPr     condused       wheels  
+    39.3741      -0.2752       0.1796      -4.7720       6.7216  
+      nBids  
+     0.1909  
+\end{verbatim}
+
+Choose the correct interpretation of the coefficient on the number of
+wheels:
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  The average number of wheels is 6.72.
+\item
+  Each additional wheel costs exactly \$6.72.
+\item
+  Each additional wheel is associated with an increase in the expected
+  auction price of \$6.72.
+\item
+  \textbf{Each additional wheel is associated with an increase in the
+  expected auction price of \$6.72, after controlling for auction
+  duration, starting price, number of bids, and the condition of the
+  item.}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\chapter{Applications}\label{applications}
+
+\chapter{Final Words}\label{final-words}
+
+\bibliography{book.bib,packages.bib}
+
+
+\end{document}

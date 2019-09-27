@@ -1,0 +1,239 @@
+
+
+# Evaluating and extending parallel slopes model
+
+This chapter covers model evaluation. By looking at different properties of the model, including the adjusted R-squared, you'll learn to compare models so that you can select the best one. You'll also learn about interaction terms in linear models.
+
+## R-squared vs. adjusted R-squared
+
+Two common measures of how well a model fits to data are $R^2$ (the coefficient of determination) and the adjusted $R^2$. The former measures the percentage of the variability in the response variable that is explained by the model. To compute this, we define
+
+$$R^2 = 1 − \frac{SSE}{SST},$$
+where $SSE$ and $SST$ are the sum of the squared residuals, and the total sum of the squares, respectively. One issue with this measure is that the $SSE$ can only decrease as new variable are added to the model, while the $SST$ depends only on the response variable and therefore is not affected by changes to the model. This means that you can increase $R^2$ by adding any additional variable to your model---even random noise.
+
+The adjusted $R^2$ includes a term that penalizes a model for each additional explanatory variable (where $p$ is the number of explanatory variables).
+
+$$R^2_{\text{adj}} = 1 − \frac{SSE}{SST}\cdot\frac{n-1}{n-p-1},$$
+
+We can see both measures in the output of the `summary()` function on our model object.
+
+___________
+
+### Exercise{-}
+
+```{r}
+load("./Data/mario_kart.RData")
+mod <- lm(totalPr ~ wheels + cond, data = mario_kart)
+```
+
+* Use `summary()` to compute $R^2$ and adjusted $R^2$ on the model object called `mod`.
+
+```{r}
+# R^2 and adjusted R^2
+summary(mod)
+```
+
+The $R^2$ value for `mod` is `r summary(mod)$r.square`, and the $R^2_{\text{adj}}$ value is `r summary(mod)$adj.r.squared`.
+
+* Use `mutate()` and `rnorm()` to add a new variable called `noise` to the `mario_kart` data set that consists of random noise. Save the new dataframe as `mario_kart_noisy`.
+
+```{r}
+# add random noise
+set.seed(34)
+# add random noise
+mario_kart_noisy <- mario_kart %>%
+  mutate(noise = rnorm(nrow(mario_kart)))
+```
+
+* Use `lm()` to fit a model that includes `wheels`, `cond`, and the random noise term.
+
+```{r}
+# compute new model
+mod2 <- lm(totalPr ~ wheels + cond + noise, data = mario_kart_noisy)
+```
+
+* Use `summary()` to compute $R^2$ and adjusted $R^2$ on the new model object. Did the value of $R^2$ increase? **Yes** What about adjusted $R^2$? **It also increased.** **Adding random noise increase both $R^2$ and $R^2_{\text{adj}}$.**
+
+```{r}
+# new R^2 and adjusted R^2
+summary(mod2)
+```
+
+___________
+
+## Prediction
+
+Once we have fit a regression model, we can use it to make predictions for unseen observations or retrieve the fitted values. Here, we explore two methods for doing the latter.
+
+A traditional way to return the fitted values (i.e. the $\hat{y}$'s) is to run the `predict()` function on the model object. This will return a vector of the fitted values. Note that `predict()` will take an optional `newdata` argument that will allow you to make predictions for observations that are not in the original data.
+
+A newer alternative is the `augment()` function from the `broom` package, which returns a `data.frame` with the response variable ($y$), the relevant explanatory variables (the $x$'s), the fitted value ($\hat{y}$) and some information about the residuals ($\hat{\varepsilon}$). `augment()` will also take a `newdata` argument that allows you to make predictions.
+
+___________
+
+### Exercise{-}
+
+The fitted model `mod` is already in your environment.
+
+* Compute the fitted values of the model as a vector using `predict()`.
+
+```{r}
+# return a vector
+VEC <- predict(mod)
+head(VEC)
+```
+
+* Compute the fitted values of the model as one column in a `data.frame` using `augment()`.
+
+```{r}
+# return a data frame
+DF <- broom::augment(mod)
+head(DF)
+```
+
+__________________
+
+### Thought experiments{-}
+
+Suppose that after going apple picking you have 12 apples left over. You decide to conduct an experiment to investigate how quickly they will rot under certain conditions. You place six apples in a cool spot in your basement, and leave the other six on the window sill in the kitchen. Every week, you estimate the percentage of the surface area of the apple that is rotten or moldy.
+
+Consider the following models:
+
+$$rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp,$$
+
+and
+
+$$rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp + \beta_3 \cdot temp \cdot t,$$
+
+where $t$ is time, measured in weeks, and $temp$ is a binary variable indicating either cool or warm.
+
+If you decide to keep the interaction term present in the second model, you are implicitly assuming that:
+
+__________
+
+* The amount of rot will vary based on the temperature.
+
+* The amount of rot will vary based on the temperature, after controlling for the length of time they have been left out.
+
+* **The rate at which apples rot will vary based on the temperature.**
+
+* Time and temperature are independent.
+
+_________________
+
+## Fitting a model with interaction
+
+Including an interaction term in a model is easy---we just have to tell `lm()` that we want to include that new variable. An expression of the form
+
+```{r, eval = FALSE}
+lm(y ~ x + z + x:z, data = mydata)
+```
+
+will do the trick. The use of the colon (`:`) here means that the interaction between `x` and `z` will be a third term in the model.
+
+___________
+
+### Exercise {-}
+
+The data frame `mario_kart` is already loaded in your workspace.
+
+* Use `lm()` to fit a model for the price of a MarioKart as a function of its condition and the duration of the auction, with interaction.
+
+```{r}
+# include interaction
+lm(totalPr ~ cond + duration + cond:duration, data = mario_kart)
+```
+
+_____________
+
+## Visualizing interaction models
+
+Interaction allows the slope of the regression line in each group to vary. In this case, this means that the relationship between the final price and the length of the auction is moderated by the condition of each item.
+
+Interaction models are easy to visualize in the data space with `ggplot2` because they have the same coefficients as if the models were fit independently to each group defined by the level of the categorical variable. In this case, new and used MarioKarts each get their own regression line. To see this, we can set an aesthetic (e.g. `color`) to the categorical variable, and then add a `geom_smooth()` layer to overlay the regression line for each color.
+
+___________
+
+## Exercise {-}
+
+The dataset `mario_kart` is already loaded in your workspace.
+
+* Use the `color` aesthetic and the `geom_smooth()` function to plot the interaction model between duration and condition in the data space. Make sure you set the `method` and `se` arguments of `geom_smooth()`.
+
+```{r, fig.width = 6}
+# interaction plot
+ggplot(data = mario_kart, aes(y = totalPr, x = duration, color = cond)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw()
+```
+
+* How does the interaction model differ from the parallel slopes model? **Class discussion**
+
+_________________
+
+## Consequences of Simpson's paradox
+
+In the simple linear regression model for average SAT score, (`total`) as a function of average teacher salary (`salary`), the fitted coefficient was -5.02 points per thousand dollars. This suggests that for every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 5 points lower.
+
+In the model that includes the percentage of students taking the SAT, the coefficient on `salary` becomes 1.84 points per thousand dollars. Choose the correct interpretation of this slope coefficient.
+
+```{r}
+SAT <- read.csv("https://assets.datacamp.com/production/repositories/845/datasets/1a12a19d2cec83ca0b58645689987e2025d91383/SAT.csv")
+lm(total ~ salary, data = SAT)
+SAT_wbin <- SAT %>%
+    mutate(sat_bin = cut(sat_pct, 3))
+mod <- lm(formula = total ~ salary + sat_bin, data = SAT_wbin)
+mod
+```
+
+__________
+
+* For every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 2 points lower.
+
+* **For every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 2 points higher, after controlling for the percentage of students taking the SAT.**
+
+* The average SAT score in richer states is about 2 points higher.
+
+______________
+
+## Simpson's paradox in action
+
+A mild version of [Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) can be observed in the MarioKart auction data. Consider the relationship between the final auction price and the length of the auction. It seems reasonable to assume that longer auctions would result in higher prices, since---other things being equal---a longer auction gives more bidders more time to see the auction and bid on the item.
+
+However, a simple linear regression model reveals the opposite: longer auctions are associated with lower final prices. The problem is that all other things are not equal. In this case, the new MarioKarts---which people pay a premium for---were mostly sold in one-day auctions, while a plurality of the used MarioKarts were sold in the standard seven-day auctions.
+
+Our simple linear regression model is misleading, in that it suggests a negative relationship between final auction price and duration. However, for the used MarioKarts, the relationship is positive.
+
+_____________
+
+### Exercise{-}
+
+The object `slr` is already defined for you.
+
+```{r, label = "slrP1", fig.cap = "`totalPr` versus `duration`"}
+slr <- ggplot(mario_kart, aes(y = totalPr, x = duration)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = 0) + 
+  theme_bw()
+slr
+```
+
+
+* Fit a simple linear regression model for final auction price (`totalPr`) as a function of duration (`duration`). 
+
+```{r}
+# model with one slope
+lm(totalPr ~ duration, data = mario_kart)
+```
+
+* Use `aes()` to add a color aesthetic that's mapped  to the condition variable to the `slr` object, shown in Figure \@ref(fig:slrP1).
+
+```{r, fig.width = 6}
+# plot with two slopes
+slr + aes(color = cond)
+```
+
+* Which of the two groups is showing signs of Simpson's paradox? **Class discussion**
+
+-------------------

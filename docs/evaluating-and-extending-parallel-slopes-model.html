@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 3 Evaluating and extending parallel slopes model | Multiple and Logistic Regression</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 3 Evaluating and extending parallel slopes model | Multiple and Logistic Regression" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 3 Evaluating and extending parallel slopes model | Multiple and Logistic Regression" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Your Name Here" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="parallel-slopes.html">
+<link rel="next" href="multiple-regression.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="parallel-slopes.html"><a href="parallel-slopes.html"><i class="fa fa-check"></i><b>2</b> Parallel Slopes</a><ul>
+<li class="chapter" data-level="2.1" data-path="parallel-slopes.html"><a href="parallel-slopes.html#fitting-a-parallel-slopes-model"><i class="fa fa-check"></i><b>2.1</b> Fitting a parallel slopes model</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#reasoning-about-two-intercepts"><i class="fa fa-check"></i>Reasoning about two intercepts</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="parallel-slopes.html"><a href="parallel-slopes.html#using-geom_line-and-augment"><i class="fa fa-check"></i><b>2.2</b> Using <code>geom_line()</code> and <code>augment()</code></a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-1"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#intercept-interpretation"><i class="fa fa-check"></i>Intercept interpretation</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#common-slope-interpretation"><i class="fa fa-check"></i>Common slope interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="parallel-slopes.html"><a href="parallel-slopes.html#syntax-from-math"><i class="fa fa-check"></i><b>2.3</b> Syntax from math</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-2"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="parallel-slopes.html"><a href="parallel-slopes.html#syntax-from-plot"><i class="fa fa-check"></i><b>2.4</b> Syntax from plot</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-3"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html"><i class="fa fa-check"></i><b>3</b> Evaluating and extending parallel slopes model</a><ul>
+<li class="chapter" data-level="3.1" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#r-squared-vs.adjusted-r-squared"><i class="fa fa-check"></i><b>3.1</b> R-squared vs. adjusted R-squared</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-4"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#prediction"><i class="fa fa-check"></i><b>3.2</b> Prediction</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-5"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#thought-experiments"><i class="fa fa-check"></i>Thought experiments</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#fitting-a-model-with-interaction"><i class="fa fa-check"></i><b>3.3</b> Fitting a model with interaction</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-6"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#visualizing-interaction-models"><i class="fa fa-check"></i><b>3.4</b> Visualizing interaction models</a></li>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-7"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="3.5" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#consequences-of-simpsons-paradox"><i class="fa fa-check"></i><b>3.5</b> Consequences of Simpson’s paradox</a></li>
+<li class="chapter" data-level="3.6" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#simpsons-paradox-in-action"><i class="fa fa-check"></i><b>3.6</b> Simpson’s paradox in action</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-8"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="multiple-regression.html"><a href="multiple-regression.html"><i class="fa fa-check"></i><b>4</b> Multiple Regression</a><ul>
+<li class="chapter" data-level="4.1" data-path="multiple-regression.html"><a href="multiple-regression.html#fitting-a-mlr-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a MLR model</a></li>
+<li class="chapter" data-level="4.2" data-path="multiple-regression.html"><a href="multiple-regression.html#tiling-the-plane"><i class="fa fa-check"></i><b>4.2</b> Tiling the plane</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-9"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="multiple-regression.html"><a href="multiple-regression.html#models-in-3d"><i class="fa fa-check"></i><b>4.3</b> Models in 3D</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-10"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#coefficient-magnitude"><i class="fa fa-check"></i>Coefficient magnitude</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#practicing-interpretation"><i class="fa fa-check"></i>Practicing interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="multiple-regression.html"><a href="multiple-regression.html#visualizing-parallel-planes"><i class="fa fa-check"></i><b>4.4</b> Visualizing parallel planes</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-11"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#parallel-plane-interpretation"><i class="fa fa-check"></i>Parallel plane interpretation</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#interpretation-of-coefficient-in-a-big-model"><i class="fa fa-check"></i>Interpretation of coefficient in a big model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a></li>
+<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><a href="https://www.datacamp.com/courses/multiple-and-logistic-regression">Multiple and Logistic Regression</a></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="evaluating-and-extending-parallel-slopes-model" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Evaluating and extending parallel slopes model</h1>
+<p>This chapter covers model evaluation. By looking at different properties of the model, including the adjusted R-squared, you’ll learn to compare models so that you can select the best one. You’ll also learn about interaction terms in linear models.</p>
+<div id="r-squared-vs.adjusted-r-squared" class="section level2">
+<h2><span class="header-section-number">3.1</span> R-squared vs. adjusted R-squared</h2>
+<p>Two common measures of how well a model fits to data are <span class="math inline">\(R^2\)</span> (the coefficient of determination) and the adjusted <span class="math inline">\(R^2\)</span>. The former measures the percentage of the variability in the response variable that is explained by the model. To compute this, we define</p>
+<p><span class="math display">\[R^2 = 1 − \frac{SSE}{SST},\]</span> where <span class="math inline">\(SSE\)</span> and <span class="math inline">\(SST\)</span> are the sum of the squared residuals, and the total sum of the squares, respectively. One issue with this measure is that the <span class="math inline">\(SSE\)</span> can only decrease as new variable are added to the model, while the <span class="math inline">\(SST\)</span> depends only on the response variable and therefore is not affected by changes to the model. This means that you can increase <span class="math inline">\(R^2\)</span> by adding any additional variable to your model—even random noise.</p>
+<p>The adjusted <span class="math inline">\(R^2\)</span> includes a term that penalizes a model for each additional explanatory variable (where <span class="math inline">\(p\)</span> is the number of explanatory variables).</p>
+<p><span class="math display">\[R^2_{\text{adj}} = 1 − \frac{SSE}{SST}\cdot\frac{n-1}{n-p-1},\]</span></p>
+<p>We can see both measures in the output of the <code>summary()</code> function on our model object.</p>
+<hr />
+<div id="exercise-4" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;./Data/mario_kart.RData&quot;</span>)
+mod &lt;-<span class="st"> </span><span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<ul>
+<li>Use <code>summary()</code> to compute <span class="math inline">\(R^2\)</span> and adjusted <span class="math inline">\(R^2\)</span> on the model object called <code>mod</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># R^2 and adjusted R^2</span>
+<span class="kw">summary</span>(mod)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-11.0078  -3.0754  -0.8254   2.9822  14.1646 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  42.3698     1.0651  39.780  &lt; 2e-16 ***
+wheels        7.2328     0.5419  13.347  &lt; 2e-16 ***
+condused     -5.5848     0.9245  -6.041 1.35e-08 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 4.887 on 138 degrees of freedom
+Multiple R-squared:  0.7165,    Adjusted R-squared:  0.7124 
+F-statistic: 174.4 on 2 and 138 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The <span class="math inline">\(R^2\)</span> value for <code>mod</code> is 0.7165182, and the <span class="math inline">\(R^2_{\text{adj}}\)</span> value is 0.7124098.</p>
+<ul>
+<li>Use <code>mutate()</code> and <code>rnorm()</code> to add a new variable called <code>noise</code> to the <code>mario_kart</code> data set that consists of random noise. Save the new dataframe as <code>mario_kart_noisy</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># add random noise</span>
+<span class="kw">set.seed</span>(<span class="dv">34</span>)
+<span class="co"># add random noise</span>
+mario_kart_noisy &lt;-<span class="st"> </span>mario_kart <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">noise =</span> <span class="kw">rnorm</span>(<span class="kw">nrow</span>(mario_kart)))</code></pre></div>
+<ul>
+<li>Use <code>lm()</code> to fit a model that includes <code>wheels</code>, <code>cond</code>, and the random noise term.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># compute new model</span>
+mod2 &lt;-<span class="st"> </span><span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond <span class="op">+</span><span class="st"> </span>noise, <span class="dt">data =</span> mario_kart_noisy)</code></pre></div>
+<ul>
+<li>Use <code>summary()</code> to compute <span class="math inline">\(R^2\)</span> and adjusted <span class="math inline">\(R^2\)</span> on the new model object. Did the value of <span class="math inline">\(R^2\)</span> increase? <strong>Yes</strong> What about adjusted <span class="math inline">\(R^2\)</span>? <strong>It also increased.</strong> <strong>Adding random noise increase both <span class="math inline">\(R^2\)</span> and <span class="math inline">\(R^2_{\text{adj}}\)</span>.</strong></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># new R^2 and adjusted R^2</span>
+<span class="kw">summary</span>(mod2)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ wheels + cond + noise, data = mario_kart_noisy)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.3256  -3.1692  -0.7492   2.8731  14.1293 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  42.2788     1.0659  39.664  &lt; 2e-16 ***
+wheels        7.2310     0.5410  13.367  &lt; 2e-16 ***
+condused     -5.4003     0.9354  -5.774 4.97e-08 ***
+noise        -0.4930     0.4059  -1.215    0.227    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 4.879 on 137 degrees of freedom
+Multiple R-squared:  0.7195,    Adjusted R-squared:  0.7134 
+F-statistic: 117.2 on 3 and 137 DF,  p-value: &lt; 2.2e-16</code></pre>
+<hr />
+</div>
+</div>
+<div id="prediction" class="section level2">
+<h2><span class="header-section-number">3.2</span> Prediction</h2>
+<p>Once we have fit a regression model, we can use it to make predictions for unseen observations or retrieve the fitted values. Here, we explore two methods for doing the latter.</p>
+<p>A traditional way to return the fitted values (i.e. the <span class="math inline">\(\hat{y}\)</span>’s) is to run the <code>predict()</code> function on the model object. This will return a vector of the fitted values. Note that <code>predict()</code> will take an optional <code>newdata</code> argument that will allow you to make predictions for observations that are not in the original data.</p>
+<p>A newer alternative is the <code>augment()</code> function from the <code>broom</code> package, which returns a <code>data.frame</code> with the response variable (<span class="math inline">\(y\)</span>), the relevant explanatory variables (the <span class="math inline">\(x\)</span>’s), the fitted value (<span class="math inline">\(\hat{y}\)</span>) and some information about the residuals (<span class="math inline">\(\hat{\varepsilon}\)</span>). <code>augment()</code> will also take a <code>newdata</code> argument that allows you to make predictions.</p>
+<hr />
+<div id="exercise-5" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>The fitted model <code>mod</code> is already in your environment.</p>
+<ul>
+<li>Compute the fitted values of the model as a vector using <code>predict()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># return a vector</span>
+VEC &lt;-<span class="st"> </span><span class="kw">predict</span>(mod)
+<span class="kw">head</span>(VEC)</code></pre></div>
+<pre><code>       1        2        3        4        5        6 
+49.60260 44.01777 49.60260 49.60260 56.83544 42.36976 </code></pre>
+<ul>
+<li>Compute the fitted values of the model as one column in a <code>data.frame</code> using <code>augment()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># return a data frame</span>
+DF &lt;-<span class="st"> </span>broom<span class="op">::</span><span class="kw">augment</span>(mod)
+<span class="kw">head</span>(DF)</code></pre></div>
+<pre><code># A tibble: 6 x 10
+  totalPr wheels cond  .fitted .se.fit .resid   .hat .sigma .cooksd
+    &lt;dbl&gt;  &lt;int&gt; &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+1    51.6      1 new      49.6   0.709   1.95 0.0210   4.90 0.00116
+2    37.0      1 used     44.0   0.547  -6.98 0.0125   4.87 0.00871
+3    45.5      1 new      49.6   0.709  -4.10 0.0210   4.89 0.00515
+4    44        1 new      49.6   0.709  -5.60 0.0210   4.88 0.00961
+5    71        2 new      56.8   0.676  14.2  0.0192   4.75 0.0557 
+6    45        0 new      42.4   1.07    2.63 0.0475   4.90 0.00505
+# … with 1 more variable: .std.resid &lt;dbl&gt;</code></pre>
+<hr />
+</div>
+<div id="thought-experiments" class="section level3 unnumbered">
+<h3>Thought experiments</h3>
+<p>Suppose that after going apple picking you have 12 apples left over. You decide to conduct an experiment to investigate how quickly they will rot under certain conditions. You place six apples in a cool spot in your basement, and leave the other six on the window sill in the kitchen. Every week, you estimate the percentage of the surface area of the apple that is rotten or moldy.</p>
+<p>Consider the following models:</p>
+<p><span class="math display">\[rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp,\]</span></p>
+<p>and</p>
+<p><span class="math display">\[rot=\beta_0 + \beta_1\cdot t + \beta_2 \cdot temp + \beta_3 \cdot temp \cdot t,\]</span></p>
+<p>where <span class="math inline">\(t\)</span> is time, measured in weeks, and <span class="math inline">\(temp\)</span> is a binary variable indicating either cool or warm.</p>
+<p>If you decide to keep the interaction term present in the second model, you are implicitly assuming that:</p>
+<hr />
+<ul>
+<li><p>The amount of rot will vary based on the temperature.</p></li>
+<li><p>The amount of rot will vary based on the temperature, after controlling for the length of time they have been left out.</p></li>
+<li><p><strong>The rate at which apples rot will vary based on the temperature.</strong></p></li>
+<li><p>Time and temperature are independent.</p></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="fitting-a-model-with-interaction" class="section level2">
+<h2><span class="header-section-number">3.3</span> Fitting a model with interaction</h2>
+<p>Including an interaction term in a model is easy—we just have to tell <code>lm()</code> that we want to include that new variable. An expression of the form</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z <span class="op">+</span><span class="st"> </span>x<span class="op">:</span>z, <span class="dt">data =</span> mydata)</code></pre></div>
+<p>will do the trick. The use of the colon (<code>:</code>) here means that the interaction between <code>x</code> and <code>z</code> will be a third term in the model.</p>
+<hr />
+<div id="exercise-6" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>The data frame <code>mario_kart</code> is already loaded in your workspace.</p>
+<ul>
+<li>Use <code>lm()</code> to fit a model for the price of a MarioKart as a function of its condition and the duration of the auction, with interaction.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># include interaction</span>
+<span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>cond <span class="op">+</span><span class="st"> </span>duration <span class="op">+</span><span class="st"> </span>cond<span class="op">:</span>duration, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ cond + duration + cond:duration, data = mario_kart)
+
+Coefficients:
+      (Intercept)           condused           duration  
+           58.268            -17.122             -1.966  
+condused:duration  
+            2.325  </code></pre>
+<hr />
+</div>
+</div>
+<div id="visualizing-interaction-models" class="section level2">
+<h2><span class="header-section-number">3.4</span> Visualizing interaction models</h2>
+<p>Interaction allows the slope of the regression line in each group to vary. In this case, this means that the relationship between the final price and the length of the auction is moderated by the condition of each item.</p>
+<p>Interaction models are easy to visualize in the data space with <code>ggplot2</code> because they have the same coefficients as if the models were fit independently to each group defined by the level of the categorical variable. In this case, new and used MarioKarts each get their own regression line. To see this, we can set an aesthetic (e.g. <code>color</code>) to the categorical variable, and then add a <code>geom_smooth()</code> layer to overlay the regression line for each color.</p>
+<hr />
+</div>
+<div id="exercise-7" class="section level2 unnumbered">
+<h2>Exercise</h2>
+<p>The dataset <code>mario_kart</code> is already loaded in your workspace.</p>
+<ul>
+<li>Use the <code>color</code> aesthetic and the <code>geom_smooth()</code> function to plot the interaction model between duration and condition in the data space. Make sure you set the <code>method</code> and <code>se</code> arguments of <code>geom_smooth()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># interaction plot</span>
+<span class="kw">ggplot</span>(<span class="dt">data =</span> mario_kart, <span class="kw">aes</span>(<span class="dt">y =</span> totalPr, <span class="dt">x =</span> duration, <span class="dt">color =</span> cond)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="MultLogSC_files/figure-html/unnamed-chunk-21-1.png" width="576" style="display: block; margin: auto;" /></p>
+<ul>
+<li>How does the interaction model differ from the parallel slopes model? <strong>Class discussion</strong></li>
+</ul>
+<hr />
+</div>
+<div id="consequences-of-simpsons-paradox" class="section level2">
+<h2><span class="header-section-number">3.5</span> Consequences of Simpson’s paradox</h2>
+<p>In the simple linear regression model for average SAT score, (<code>total</code>) as a function of average teacher salary (<code>salary</code>), the fitted coefficient was -5.02 points per thousand dollars. This suggests that for every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 5 points lower.</p>
+<p>In the model that includes the percentage of students taking the SAT, the coefficient on <code>salary</code> becomes 1.84 points per thousand dollars. Choose the correct interpretation of this slope coefficient.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SAT &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://assets.datacamp.com/production/repositories/845/datasets/1a12a19d2cec83ca0b58645689987e2025d91383/SAT.csv&quot;</span>)
+<span class="kw">lm</span>(total <span class="op">~</span><span class="st"> </span>salary, <span class="dt">data =</span> SAT)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = total ~ salary, data = SAT)
+
+Coefficients:
+(Intercept)       salary  
+  1.871e+03   -5.019e-03  </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">SAT_wbin &lt;-<span class="st"> </span>SAT <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">sat_bin =</span> <span class="kw">cut</span>(sat_pct, <span class="dv">3</span>))
+mod &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> total <span class="op">~</span><span class="st"> </span>salary <span class="op">+</span><span class="st"> </span>sat_bin, <span class="dt">data =</span> SAT_wbin)
+mod</code></pre></div>
+<pre><code>
+Call:
+lm(formula = total ~ salary + sat_bin, data = SAT_wbin)
+
+Coefficients:
+     (Intercept)            salary    sat_bin(33,63]  sat_bin(63,93.1]  
+      1597.10773           0.00184        -191.45221        -217.73480  </code></pre>
+<hr />
+<ul>
+<li><p>For every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 2 points lower.</p></li>
+<li><p><strong>For every additional thousand dollars of salary for teachers in a particular state, the expected SAT score for a student from that state is about 2 points higher, after controlling for the percentage of students taking the SAT.</strong></p></li>
+<li><p>The average SAT score in richer states is about 2 points higher.</p></li>
+</ul>
+<hr />
+</div>
+<div id="simpsons-paradox-in-action" class="section level2">
+<h2><span class="header-section-number">3.6</span> Simpson’s paradox in action</h2>
+<p>A mild version of <a href="https://en.wikipedia.org/wiki/Simpson%27s_paradox">Simpson’s paradox</a> can be observed in the MarioKart auction data. Consider the relationship between the final auction price and the length of the auction. It seems reasonable to assume that longer auctions would result in higher prices, since—other things being equal—a longer auction gives more bidders more time to see the auction and bid on the item.</p>
+<p>However, a simple linear regression model reveals the opposite: longer auctions are associated with lower final prices. The problem is that all other things are not equal. In this case, the new MarioKarts—which people pay a premium for—were mostly sold in one-day auctions, while a plurality of the used MarioKarts were sold in the standard seven-day auctions.</p>
+<p>Our simple linear regression model is misleading, in that it suggests a negative relationship between final auction price and duration. However, for the used MarioKarts, the relationship is positive.</p>
+<hr />
+<div id="exercise-8" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>The object <code>slr</code> is already defined for you.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slr &lt;-<span class="st"> </span><span class="kw">ggplot</span>(mario_kart, <span class="kw">aes</span>(<span class="dt">y =</span> totalPr, <span class="dt">x =</span> duration)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="dv">0</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_bw</span>()
+slr</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:slrP1"></span>
+<img src="MultLogSC_files/figure-html/slrP1-1.png" alt="`totalPr` versus `duration`" width="384" />
+<p class="caption">
+Figure 3.1: <code>totalPr</code> versus <code>duration</code>
+</p>
+</div>
+<ul>
+<li>Fit a simple linear regression model for final auction price (<code>totalPr</code>) as a function of duration (<code>duration</code>).</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># model with one slope</span>
+<span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>duration, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ duration, data = mario_kart)
+
+Coefficients:
+(Intercept)     duration  
+     52.374       -1.317  </code></pre>
+<ul>
+<li>Use <code>aes()</code> to add a color aesthetic that’s mapped to the condition variable to the <code>slr</code> object, shown in Figure <a href="evaluating-and-extending-parallel-slopes-model.html#fig:slrP1">3.1</a>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot with two slopes</span>
+slr <span class="op">+</span><span class="st"> </span><span class="kw">aes</span>(<span class="dt">color =</span> cond)</code></pre></div>
+<p><img src="MultLogSC_files/figure-html/unnamed-chunk-24-1.png" width="576" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Which of the two groups is showing signs of Simpson’s paradox? <strong>Class discussion</strong></li>
+</ul>
+<hr />
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="parallel-slopes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="multiple-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["MultLogSC.pdf", "MultLogSC.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

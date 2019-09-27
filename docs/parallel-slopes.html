@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Parallel Slopes | Multiple and Logistic Regression</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.12 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Parallel Slopes | Multiple and Logistic Regression" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Parallel Slopes | Multiple and Logistic Regression" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Your Name Here" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html">
+<link rel="next" href="evaluating-and-extending-parallel-slopes-model.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="parallel-slopes.html"><a href="parallel-slopes.html"><i class="fa fa-check"></i><b>2</b> Parallel Slopes</a><ul>
+<li class="chapter" data-level="2.1" data-path="parallel-slopes.html"><a href="parallel-slopes.html#fitting-a-parallel-slopes-model"><i class="fa fa-check"></i><b>2.1</b> Fitting a parallel slopes model</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#reasoning-about-two-intercepts"><i class="fa fa-check"></i>Reasoning about two intercepts</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="parallel-slopes.html"><a href="parallel-slopes.html#using-geom_line-and-augment"><i class="fa fa-check"></i><b>2.2</b> Using <code>geom_line()</code> and <code>augment()</code></a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-1"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#intercept-interpretation"><i class="fa fa-check"></i>Intercept interpretation</a></li>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#common-slope-interpretation"><i class="fa fa-check"></i>Common slope interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="parallel-slopes.html"><a href="parallel-slopes.html#syntax-from-math"><i class="fa fa-check"></i><b>2.3</b> Syntax from math</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-2"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="parallel-slopes.html"><a href="parallel-slopes.html#syntax-from-plot"><i class="fa fa-check"></i><b>2.4</b> Syntax from plot</a><ul>
+<li class="chapter" data-level="" data-path="parallel-slopes.html"><a href="parallel-slopes.html#exercise-3"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html"><i class="fa fa-check"></i><b>3</b> Evaluating and extending parallel slopes model</a><ul>
+<li class="chapter" data-level="3.1" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#r-squared-vs.adjusted-r-squared"><i class="fa fa-check"></i><b>3.1</b> R-squared vs. adjusted R-squared</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-4"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#prediction"><i class="fa fa-check"></i><b>3.2</b> Prediction</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-5"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#thought-experiments"><i class="fa fa-check"></i>Thought experiments</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#fitting-a-model-with-interaction"><i class="fa fa-check"></i><b>3.3</b> Fitting a model with interaction</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-6"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#visualizing-interaction-models"><i class="fa fa-check"></i><b>3.4</b> Visualizing interaction models</a></li>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-7"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="3.5" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#consequences-of-simpsons-paradox"><i class="fa fa-check"></i><b>3.5</b> Consequences of Simpson’s paradox</a></li>
+<li class="chapter" data-level="3.6" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#simpsons-paradox-in-action"><i class="fa fa-check"></i><b>3.6</b> Simpson’s paradox in action</a><ul>
+<li class="chapter" data-level="" data-path="evaluating-and-extending-parallel-slopes-model.html"><a href="evaluating-and-extending-parallel-slopes-model.html#exercise-8"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="multiple-regression.html"><a href="multiple-regression.html"><i class="fa fa-check"></i><b>4</b> Multiple Regression</a><ul>
+<li class="chapter" data-level="4.1" data-path="multiple-regression.html"><a href="multiple-regression.html#fitting-a-mlr-model"><i class="fa fa-check"></i><b>4.1</b> Fitting a MLR model</a></li>
+<li class="chapter" data-level="4.2" data-path="multiple-regression.html"><a href="multiple-regression.html#tiling-the-plane"><i class="fa fa-check"></i><b>4.2</b> Tiling the plane</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-9"><i class="fa fa-check"></i>Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="multiple-regression.html"><a href="multiple-regression.html#models-in-3d"><i class="fa fa-check"></i><b>4.3</b> Models in 3D</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-10"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#coefficient-magnitude"><i class="fa fa-check"></i>Coefficient magnitude</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#practicing-interpretation"><i class="fa fa-check"></i>Practicing interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="multiple-regression.html"><a href="multiple-regression.html#visualizing-parallel-planes"><i class="fa fa-check"></i><b>4.4</b> Visualizing parallel planes</a><ul>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#exercise-11"><i class="fa fa-check"></i>Exercise</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#parallel-plane-interpretation"><i class="fa fa-check"></i>Parallel plane interpretation</a></li>
+<li class="chapter" data-level="" data-path="multiple-regression.html"><a href="multiple-regression.html#interpretation-of-coefficient-in-a-big-model"><i class="fa fa-check"></i>Interpretation of coefficient in a big model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a></li>
+<li class="chapter" data-level="6" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>6</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><a href="https://www.datacamp.com/courses/multiple-and-logistic-regression">Multiple and Logistic Regression</a></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="parallel-slopes" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Parallel Slopes</h1>
+<p>In this chapter you’ll learn about the class of linear models called “parallel slopes models.” These include one numeric and one categorical explanatory variable.</p>
+<div id="fitting-a-parallel-slopes-model" class="section level2">
+<h2><span class="header-section-number">2.1</span> Fitting a parallel slopes model</h2>
+<p>We use the <code>lm()</code> function to fit linear models to data. In this case, we want to understand how the price of MarioKart games sold at auction varies as a function of not only the number of wheels included in the package, but also whether the item is new or used. Obviously, it is expected that you might have to pay a premium to buy these new. But how much is that premium? Can we estimate its value after <em>controlling for the number of wheels</em>?</p>
+<p>We will fit a parallel slopes model using <code>lm()</code>. In addition to the <code>data</code> argument, <code>lm()</code> needs to know which variables you want to include in your regression model, and how you want to include them. It accomplishes this using a <code>formula</code> argument. A simple linear regression formula looks like <code>y ~ x</code>, where <code>y</code> is the name of the response variable, and <code>x</code> is the name of the explanatory variable. Here, we will simply extend this formula to include multiple explanatory variables. A parallel slopes model has the form <code>y ~ x + z</code>, where <code>z</code> is a categorical explanatory variable, and <code>x</code> is a numerical explanatory variable.</p>
+<p>The output from <code>lm()</code> is a model object, which when printed, will show the fitted coefficients.</p>
+<hr />
+<div id="exercise" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<ul>
+<li>The dataset <code>marioKart</code> is already loaded for you. Explore the data using <code>glimpse()</code> or <code>str()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(openintro)
+<span class="kw">data</span>(marioKart)
+<span class="kw">glimpse</span>(marioKart)</code></pre></div>
+<pre><code>Observations: 143
+Variables: 12
+$ ID         &lt;dbl&gt; 150377422259, 260483376854, 320432342985, 28040522467…
+$ duration   &lt;int&gt; 3, 7, 3, 3, 1, 3, 1, 1, 3, 7, 1, 1, 1, 1, 7, 7, 3, 3,…
+$ nBids      &lt;int&gt; 20, 13, 16, 18, 20, 19, 13, 15, 29, 8, 15, 15, 13, 16…
+$ cond       &lt;fct&gt; new, used, new, new, new, new, used, new, used, used,…
+$ startPr    &lt;dbl&gt; 0.99, 0.99, 0.99, 0.99, 0.01, 0.99, 0.01, 1.00, 0.99,…
+$ shipPr     &lt;dbl&gt; 4.00, 3.99, 3.50, 0.00, 0.00, 4.00, 0.00, 2.99, 4.00,…
+$ totalPr    &lt;dbl&gt; 51.55, 37.04, 45.50, 44.00, 71.00, 45.00, 37.02, 53.9…
+$ shipSp     &lt;fct&gt; standard, firstClass, firstClass, standard, media, st…
+$ sellerRate &lt;int&gt; 1580, 365, 998, 7, 820, 270144, 7284, 4858, 27, 201, …
+$ stockPhoto &lt;fct&gt; yes, yes, no, yes, yes, yes, yes, yes, yes, no, yes, …
+$ wheels     &lt;int&gt; 1, 1, 1, 1, 2, 0, 0, 2, 1, 1, 2, 2, 2, 2, 1, 0, 1, 1,…
+$ title      &lt;fct&gt; &quot;~~ Wii MARIO KART &amp;amp; WHEEL ~ NINTENDO Wii ~ BRAND…</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Or</span>
+<span class="co"># str(marioKart)</span>
+<span class="co"># Data munging to agree with DataCamp mario_kart</span>
+mario_kart &lt;-<span class="st"> </span>marioKart <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">filter</span>(totalPr <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>)
+<span class="kw">str</span>(mario_kart)</code></pre></div>
+<pre><code>&#39;data.frame&#39;:   141 obs. of  12 variables:
+ $ ID        : num  1.5e+11 2.6e+11 3.2e+11 2.8e+11 1.7e+11 ...
+ $ duration  : int  3 7 3 3 1 3 1 1 3 7 ...
+ $ nBids     : int  20 13 16 18 20 19 13 15 29 8 ...
+ $ cond      : Factor w/ 2 levels &quot;new&quot;,&quot;used&quot;: 1 2 1 1 1 1 2 1 2 2 ...
+ $ startPr   : num  0.99 0.99 0.99 0.99 0.01 ...
+ $ shipPr    : num  4 3.99 3.5 0 0 4 0 2.99 4 4 ...
+ $ totalPr   : num  51.5 37 45.5 44 71 ...
+ $ shipSp    : Factor w/ 8 levels &quot;firstClass&quot;,&quot;media&quot;,..: 6 1 1 6 2 6 6 8 5 1 ...
+ $ sellerRate: int  1580 365 998 7 820 270144 7284 4858 27 201 ...
+ $ stockPhoto: Factor w/ 2 levels &quot;no&quot;,&quot;yes&quot;: 2 2 1 2 2 2 2 2 2 1 ...
+ $ wheels    : int  1 1 1 1 2 0 0 2 1 1 ...
+ $ title     : Factor w/ 80 levels &quot; Mario Kart Wii with Wii Wheel for Wii (New)&quot;,..: 80 60 22 7 4 19 34 5 79 70 ...</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">save</span>(mario_kart,<span class="dt">file =</span> <span class="st">&quot;./Data/mario_kart.RData&quot;</span>)</code></pre></div>
+<ul>
+<li>Use <code>lm()</code> to fit a parallel slopes model for total price as a function of the number of wheels and the condition of the item. Use the argument <code>data</code> to specify the dataset you’re using.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># fit parallel slopes</span>
+<span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  </code></pre>
+<hr />
+</div>
+<div id="reasoning-about-two-intercepts" class="section level3 unnumbered">
+<h3>Reasoning about two intercepts</h3>
+<p>The <code>marioKart</code> data contains several other variables. The <code>totalPr</code>, <code>startPr</code>, and <code>shipPr</code> variables are numeric, while the <code>cond</code> and <code>stockPhoto</code> variables are categorical.</p>
+<p>Which formula will result in a parallel slopes model?</p>
+<ul>
+<li><p><code>totalPr ~ startPr + shipPr</code></p></li>
+<li><p><code>cond ~ startPr + stockPhoto</code></p></li>
+<li><p><strong><code>totalPr ~ shipPr + stockPhoto</code></strong></p></li>
+<li><p><code>totalPr ~ cond</code></p></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="using-geom_line-and-augment" class="section level2">
+<h2><span class="header-section-number">2.2</span> Using <code>geom_line()</code> and <code>augment()</code></h2>
+<p>Parallel slopes models are so-named because we can visualize these models in the data space as not one line, but two parallel lines. To do this, we’ll draw two things:</p>
+<ul>
+<li><p>a scatterplot showing the data, with color separating the points into groups</p></li>
+<li><p>a line for each value of the categorical variable</p></li>
+</ul>
+<p>Our plotting strategy is to compute the fitted values, plot these, and connect the points to form a line. The <code>augment()</code> function from the <code>broom</code> package provides an easy way to add the fitted values to our data frame, and the <code>geom_line()</code> function can then use that data frame to plot the points and connect them.</p>
+<p>Note that this approach has the added benefit of automatically coloring the lines appropriately to match the data.</p>
+<p>You already know how to use <code>ggplot()</code> and <code>geom_point()</code> to make the scatterplot. The only twist is that now you’ll pass your <code>augment()</code>-ed model as the data argument in your <code>ggplot()</code> call. When you add your <code>geom_line()</code>, instead of letting the <code>y</code> aesthetic inherit its values from the <code>ggplot()</code> call, you can set it to the <code>.fitted</code> column of the <code>augment()</code>-ed model. This has the advantage of automatically coloring the lines for you.</p>
+<hr />
+<div id="exercise-1" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>The parallel slopes model <code>mod</code> relating total price to the number of wheels and condition is already in your workspace.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<ul>
+<li><code>augment()</code> the model <code>mod</code> and explore the returned data frame using <code>glimpse()</code>. Notice the new variables that have been created.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(broom)
+augmented_mod &lt;-<span class="st"> </span><span class="kw">augment</span>(mod)
+<span class="kw">glimpse</span>(augmented_mod)</code></pre></div>
+<pre><code>Observations: 141
+Variables: 10
+$ totalPr    &lt;dbl&gt; 51.55, 37.04, 45.50, 44.00, 71.00, 45.00, 37.02, 53.9…
+$ wheels     &lt;int&gt; 1, 1, 1, 1, 2, 0, 0, 2, 1, 1, 2, 2, 2, 2, 1, 0, 1, 1,…
+$ cond       &lt;fct&gt; new, used, new, new, new, new, used, new, used, used,…
+$ .fitted    &lt;dbl&gt; 49.60260, 44.01777, 49.60260, 49.60260, 56.83544, 42.…
+$ .se.fit    &lt;dbl&gt; 0.7087865, 0.5465195, 0.7087865, 0.7087865, 0.6764502…
+$ .resid     &lt;dbl&gt; 1.9473995, -6.9777674, -4.1026005, -5.6026005, 14.164…
+$ .hat       &lt;dbl&gt; 0.02103158, 0.01250410, 0.02103158, 0.02103158, 0.019…
+$ .sigma     &lt;dbl&gt; 4.902339, 4.868399, 4.892414, 4.881308, 4.750591, 4.8…
+$ .cooksd    &lt;dbl&gt; 1.161354e-03, 8.712334e-03, 5.154337e-03, 9.612441e-0…
+$ .std.resid &lt;dbl&gt; 0.40270893, -1.43671086, -0.84838977, -1.15857953, 2.…</code></pre>
+<ul>
+<li>Draw the scatterplot and save it as <code>data_space</code> by passing the <code>augment()</code>-ed model to <code>ggplot()</code> and using <code>geom_point()</code>.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># scatterplot, with color</span>
+data_space &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> augmented_mod, 
+                     <span class="kw">aes</span>(<span class="dt">x =</span> wheels, <span class="dt">y =</span> totalPr, 
+                         <span class="dt">color =</span> cond)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<ul>
+<li>Use <code>geom_line()</code> once to add two parallel lines corresponding to our model.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># single call to geom_line()</span>
+data_space <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> wheels, <span class="dt">y =</span> .fitted)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<p><img src="MultLogSC_files/figure-html/unnamed-chunk-7-1.png" width="384" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+<div id="intercept-interpretation" class="section level3 unnumbered">
+<h3>Intercept interpretation</h3>
+<p>Recall that the <code>cond</code> variable is either <code>new</code> or <code>used</code>. Here are the fitted coefficients from your model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  </code></pre>
+<p>Choose the correct interpretation of the coefficient on <code>condused</code>:</p>
+<ul>
+<li><p>For each additional wheel, the expected price of a used MarioKart is $5.58 lower.</p></li>
+<li><p><strong>The expected price of a used MarioKart is $5.58 less than that of a new one with the same number of wheels.</strong></p></li>
+<li><p>The expected price of a new MarioKart is $5.58 less than that of a used one with the same number of wheels.</p></li>
+<li><p>The used MarioKarts are always $5.58 cheaper.</p></li>
+</ul>
+<hr />
+</div>
+<div id="common-slope-interpretation" class="section level3 unnumbered">
+<h3>Common slope interpretation</h3>
+<p>Recall the fitted coefficients from our model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lm</span>(totalPr <span class="op">~</span><span class="st"> </span>wheels <span class="op">+</span><span class="st"> </span>cond, <span class="dt">data =</span> mario_kart)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = totalPr ~ wheels + cond, data = mario_kart)
+
+Coefficients:
+(Intercept)       wheels     condused  
+     42.370        7.233       -5.585  </code></pre>
+<p>Choose the correct interpretation of the slope coefficient:</p>
+<ul>
+<li><p><strong>For each additional wheel, the expected price of a MarioKart increases by $7.23 regardless of whether it is new or used.</strong></p></li>
+<li><p>For each additional wheel, the expected price of a new MarioKart increases by $7.23.</p></li>
+<li><p>The expected price of a used MarioKart is $5.59 less than that of a new one with the same number of wheels.</p></li>
+<li><p>You should always expect to pay $42.37 for a MarioKart.</p></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="syntax-from-math" class="section level2">
+<h2><span class="header-section-number">2.3</span> Syntax from math</h2>
+<p>The <code>babies</code> data set contains observations about the birthweight and other characteristics of children born in the San Francisco Bay area from 1960–1967.</p>
+<p>We would like to build a model for birthweight as a function of the mother’s age and whether this child was her first (<code>parity == 0</code>). Use the mathematical specification below to code the model in R.</p>
+<p><span class="math display">\[birthweight=\beta_0 + \beta_1 \cdot age + \beta_2 \cdot parity + \varepsilon\]</span></p>
+<hr />
+<div id="exercise-2" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<p>The birthweight variable is recorded in the column <code>bwt</code>.</p>
+<ul>
+<li>Use <code>lm()</code> to build the parallel slopes model specified above. It’s not necessary to use <code>factor()</code> in this case as the variable <code>parity</code> is coded using binary numeric values.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># build model</span>
+<span class="kw">lm</span>(bwt <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>parity, <span class="dt">data =</span> babies)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = bwt ~ age + parity, data = babies)
+
+Coefficients:
+(Intercept)          age       parity  
+  118.27782      0.06315     -1.65248  </code></pre>
+<hr />
+</div>
+</div>
+<div id="syntax-from-plot" class="section level2">
+<h2><span class="header-section-number">2.4</span> Syntax from plot</h2>
+<p>This time, we’d like to build a model for birthweight as a function of the length of gestation and the mother’s smoking status. Use Figure <a href="parallel-slopes.html#fig:SmokP1">2.1</a> to inform your model specification.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> babies, <span class="kw">aes</span>(<span class="dt">x =</span> gestation, <span class="dt">y =</span> bwt, <span class="dt">color =</span> <span class="kw">factor</span>(smoke))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> <span class="fl">0.5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_bw</span>()</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:SmokP1"></span>
+<img src="MultLogSC_files/figure-html/SmokP1-1.png" alt="`bwt` versus `gestation`" width="768" />
+<p class="caption">
+Figure 2.1: <code>bwt</code> versus <code>gestation</code>
+</p>
+</div>
+<hr />
+<div id="exercise-3" class="section level3 unnumbered">
+<h3>Exercise</h3>
+<ul>
+<li>Use <code>lm()</code> to build a parallel slopes model implied by the plot. It’s not necessary to use <code>factor()</code> in this case either.</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># build model</span>
+<span class="kw">lm</span>(bwt <span class="op">~</span><span class="st"> </span>gestation <span class="op">+</span><span class="st"> </span>smoke, <span class="dt">data =</span> babies)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = bwt ~ gestation + smoke, data = babies)
+
+Coefficients:
+(Intercept)    gestation        smoke  
+    -0.9317       0.4429      -8.0883  </code></pre>
+<hr />
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="evaluating-and-extending-parallel-slopes-model.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["MultLogSC.pdf", "MultLogSC.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
