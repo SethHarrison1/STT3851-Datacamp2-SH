@@ -12,6 +12,7 @@ In a parallel slopes model, we had two explanatory variables: one was numeric an
 ____________
 
 ```{r}
+library(ggplot2)
 load("./Data/mario_kart.RData")
 str(mario_kart)
 ```

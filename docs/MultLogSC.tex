@@ -21,7 +21,6 @@
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={Multiple and Logistic Regression},
@@ -126,7 +125,7 @@ and Logistic Regression}}
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Last compiled: Aug 06, 2019}
+    \date{Last compiled: Oct 02, 2019}
 
 \usepackage{booktabs}
 
@@ -1170,6 +1169,7 @@ variables to be numeric.
 
 \begin{Shaded}
 \begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
 \KeywordTok{load}\NormalTok{(}\StringTok{"./Data/mario_kart.RData"}\NormalTok{)}
 \KeywordTok{str}\NormalTok{(mario_kart)}
 \end{Highlighting}
@@ -1361,7 +1361,7 @@ operator to chain commands together.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-31-1} \end{center}
+\hypertarget{htmlwidget-b1a075f5538d7f834f47}{}
 
 \begin{itemize}
 \tightlist
@@ -1400,7 +1400,7 @@ startPr      0.2329542 0.04363644  5.338525 3.755647e-07
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-32-1} \end{center}
+\hypertarget{htmlwidget-7a63ded58c7f2591b816}{}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -1542,7 +1542,7 @@ condused    -8.9493214  1.3237851 -6.760403 3.635333e-10
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-35-1} \end{center}
+\hypertarget{htmlwidget-358eeb0b2e917045f18e}{}
 
 \begin{itemize}
 \tightlist
@@ -1561,7 +1561,7 @@ condused    -8.9493214  1.3237851 -6.760403 3.635333e-10
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-36-1} \end{center}
+\hypertarget{htmlwidget-8a6c2d5675e6f40c5e57}{}
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
@@ -1661,9 +1661,1388 @@ wheels:
 
 \begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
-\chapter{Applications}\label{applications}
+\chapter{Logistic Regression}\label{logistic-regression}
 
-\chapter{Final Words}\label{final-words}
+n this chapter you'll learn about using logistic regression, a
+generalized linear model (GLM), to predict a binary outcome and classify
+observations.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Fitting a line to a binary
+response}\label{fitting-a-line-to-a-binary-response}
+
+When our response variable is binary, a regression model has several
+limitations. Among the more obvious---and logically incongruous---is
+that the regression line extends infinitely in either direction. This
+means that even though our response variable \(y\) only takes on the
+values 0 and 1, our fitted values \(\hat{y}\) can range anywhere from
+\(-\infty\) to \(\infty\). This doesn't make sense.
+
+To see this in action, we'll fit a linear regression model to data about
+55 students who applied to medical school. We want to understand how
+their undergraduate GPA relates to the probability they will be accepted
+by a particular school (\texttt{Acceptance}).
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-12}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(Stat2Data)}
+\KeywordTok{data}\NormalTok{(MedGPA)}
+\end{Highlighting}
+\end{Shaded}
+
+The medical school acceptance data is loaded in your workspace as
+\texttt{MedGPA}.
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called \texttt{data\_space} for
+  \texttt{Acceptance} as a function of \texttt{GPA}. Use
+  \texttt{geom\_jitter()} to apply a small amount of jitter to the
+  points in the y-direction by setting \texttt{width\ =\ 0} and
+  \texttt{height\ =\ 0.05}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# scatterplot with jitter}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ GPA, }\DataTypeTok{y =}\NormalTok{ Acceptance)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{width =} \DecValTok{0}\NormalTok{, }\DataTypeTok{height =} \FloatTok{0.05}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-41-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_smooth()} to add the simple linear regression line
+  to \texttt{data\_space}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# linear regression line}
+\NormalTok{data_space }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-42-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Fitting a line to a binary response
+(2)}\label{fitting-a-line-to-a-binary-response-2}
+
+In the previous exercise, we identified a major limitation to fitting a
+linear regression model when we have a binary response variable.
+However, it is not always inappropriate to do so. Note that our
+regression line only makes illogical predictions (i.e. \(\hat{y} < 0\)
+or \(\hat{y} > 1\)) for students with very high or very low GPAs. For
+GPAs closer to average, the predictions seem fine.
+
+Moreover, the alternative logistic regression model---which we will fit
+next---is very similar to the linear regression model for observations
+near the average of the explanatory variable. It just so happens that
+the logistic curve is very straight near its middle. Thus, in these
+cases a linear regression model may still be acceptable, even for a
+binary response.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-13}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{filter()} to find the subset of the observations whose
+  GPAs are between 3.375 and 3.77, inclusive.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# filter}
+\NormalTok{MedGPA_middle <-}\StringTok{ }\KeywordTok{filter}\NormalTok{(MedGPA, GPA }\OperatorTok{>=}\StringTok{ }\FloatTok{3.375}\NormalTok{, GPA }\OperatorTok{<=}\StringTok{ }\FloatTok{3.77}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(MedGPA_middle)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  Accept Acceptance Sex BCPM  GPA VR PS WS BS MCAT Apps
+1      D          0   F 3.59 3.62 11  9  9  9   38    5
+2      A          1   F 3.74 3.69 12 11  7 10   40    5
+3      A          1   F 3.53 3.38  9 11  4 11   35   11
+4      A          1   M 3.59 3.72 10  9  7 10   36    5
+5      A          1   F 3.74 3.71  8 10  6 11   35    5
+6      A          1   F 3.35 3.49 11  8  4  8   31    9
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called data\_space for Acceptance as a function
+  of GPA for only those observations. Use geom\_jitter() to apply 0.05
+  jitter to the points in the \(y\)-direction and no jitter to the
+  \(x\)-direction.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# scatterplot with jitter}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(MedGPA_middle, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ GPA, }\DataTypeTok{y =}\NormalTok{ Acceptance)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{width =} \DecValTok{0}\NormalTok{, }\DataTypeTok{height =} \FloatTok{0.05}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-44-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Use geom\_smooth() to add only the simple linear regression line to
+  data\_space.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# linear regression line}
+\NormalTok{data_space }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-45-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Fitting a model}\label{fitting-a-model}
+
+Logistic regression is a special case of a broader class of
+\href{https://en.wikipedia.org/wiki/Generalized_linear_model}{generalized
+linear models}, often known as GLMs. Specifying a logistic regression
+model is very similar to specify a regression model, with two important
+differences:
+
+\begin{itemize}
+\item
+  We use the \texttt{glm()} function instead of \texttt{lm()}
+\item
+  We specify the \texttt{family} argument and set it to
+  \texttt{binomial}. This tells the GLM function that we want to fit a
+  logistic regression model to our binary response.
+  \href{https://en.wikipedia.org/wiki/Binomial_distribution}{The
+  terminology stems from the assumption that our binary response follows
+  a \{binomial distribution.}
+\end{itemize}
+
+We still use the formula and data arguments with \texttt{glm()}.
+
+Note that the mathematical model is now:
+
+\begin{equation}
+\log\left(\frac{y}{1-y}\right) = \beta_0 + \beta_1 \cdot x + \varepsilon,
+\end{equation}
+
+where \(\varepsilon\) is the error term.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-14}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{glm()} to fit a logistic regression model for
+  \texttt{Acceptance} as a function of \texttt{GPA}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# fit model}
+\NormalTok{mod <-}\StringTok{ }\KeywordTok{glm}\NormalTok{(Acceptance }\OperatorTok{~}\StringTok{ }\NormalTok{GPA, }\DataTypeTok{data =}\NormalTok{ MedGPA, }\DataTypeTok{family =}\NormalTok{ binomial)}
+\NormalTok{mod}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:  glm(formula = Acceptance ~ GPA, family = binomial, data = MedGPA)
+
+Coefficients:
+(Intercept)          GPA  
+    -19.207        5.454  
+
+Degrees of Freedom: 54 Total (i.e. Null);  53 Residual
+Null Deviance:      75.79 
+Residual Deviance: 56.84    AIC: 60.84
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Using geom\_smooth()}\label{using-geom_smooth}
+
+Our logistic regression model can be visualized in the data space by
+overlaying the appropriate logistic curve. We can use the
+\texttt{geom\_smooth()} function to do this. Recall that
+\texttt{geom\_smooth()} takes a method argument that allows you to
+specify what type of smoother you want to see. In our case, we need to
+specify that we want to use the \texttt{glm()} function to do the
+smoothing.
+
+However we also need to tell the \texttt{glm()} function which member of
+the GLM family we want to use. To do this, we will pass the
+\texttt{family} argument to \texttt{glm()} as a list using the
+\texttt{method.args} argument to \texttt{geom\_smooth()}. This mechanism
+is common in R, and allows one function to pass a list of arguments to
+another function.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-15}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called \texttt{data\_space} for
+  \texttt{Acceptance} as a function of \texttt{GPA}. Use
+  \texttt{geom\_jitter()} to apply a small amount of jitter to the
+  points in the \(y\)-direction. Set \texttt{width\ =\ 0} and
+  \texttt{height\ =\ 0.05} in \texttt{geom\_jitter()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# scatterplot with jitter}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ Acceptance, }\DataTypeTok{x =}\NormalTok{ GPA)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{(}\DataTypeTok{width =} \DecValTok{0}\NormalTok{, }\DataTypeTok{height =} \FloatTok{0.05}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_smooth()} to add the logistic regression line to
+  \texttt{data\_space} by specifying the \texttt{method} and
+  \texttt{method.args} arguments to fit a logistic \texttt{glm}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# add logistic curve}
+\NormalTok{data_space }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\DataTypeTok{method =} \StringTok{"glm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{method.args =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{family =} \StringTok{"binomial"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-48-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Using bins}\label{using-bins}
+
+One of the difficulties in working with a binary response variable is
+understanding how it ``changes.'' The response itself (\(y\)) is either
+0 or 1, while the fitted values (\(\hat{y}\))---which are interpreted as
+probabilities---are between 0 and 1. But if every medical school
+applicant is either admitted or not, what does it mean to talk about the
+probability of being accepted?
+
+What we'd like is a larger sample of students, so that for each GPA
+value (e.g.~3.54) we had many observations (say \(n\)), and we could
+then take the average of those \(n\) observations to arrive at the
+estimated probability of acceptance. Unfortunately, since the
+explanatory variable is continuous, this is hopeless---it would take an
+infinite amount of data to make these estimates robust.
+
+Instead, what we can do is put the observations into bins based on their
+GPA value. Within each bin, we can compute the proportion of accepted
+students, and we can visualize our model as a smooth logistic curve
+through those binned values.
+
+We have created a \texttt{data.frame} called \texttt{MedGPA\_binned}
+that aggregates the original data into separate bins for each
+\textbf{1/6} of GPA. It also contains the fitted values from the
+logistic regression model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{gpa_bins <-}\StringTok{ }\KeywordTok{quantile}\NormalTok{(MedGPA}\OperatorTok{$}\NormalTok{GPA, }\DataTypeTok{probs =} \KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\OperatorTok{/}\DecValTok{6}\NormalTok{))}
+\NormalTok{gpa_bins}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       0% 16.66667% 33.33333%       50% 66.66667% 83.33333%      100% 
+     2.72      3.30      3.44      3.58      3.70      3.87      3.97 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{MedGPA}\OperatorTok{$}\NormalTok{bins <-}\StringTok{ }\KeywordTok{cut}\NormalTok{(MedGPA}\OperatorTok{$}\NormalTok{GPA, }\DataTypeTok{breaks =}\NormalTok{ gpa_bins, }\DataTypeTok{include.lowest =} \OtherTok{TRUE}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(MedGPA)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  Accept Acceptance Sex BCPM  GPA VR PS WS BS MCAT Apps       bins
+1      D          0   F 3.59 3.62 11  9  9  9   38    5 (3.58,3.7]
+2      A          1   M 3.75 3.84 12 13  8 12   45    3 (3.7,3.87]
+3      A          1   F 3.24 3.23  9 10  5  9   33   19 [2.72,3.3]
+4      A          1   F 3.74 3.69 12 11  7 10   40    5 (3.58,3.7]
+5      A          1   F 3.53 3.38  9 11  4 11   35   11 (3.3,3.44]
+6      A          1   M 3.59 3.72 10  9  7 10   36    5 (3.7,3.87]
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{MedGPA_binned <-}\StringTok{ }\NormalTok{MedGPA }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(bins) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mean_GPA =} \KeywordTok{mean}\NormalTok{(GPA), }\DataTypeTok{acceptance_rate =} \KeywordTok{mean}\NormalTok{(Acceptance))}
+\NormalTok{MedGPA_binned}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 6 x 3
+  bins        mean_GPA acceptance_rate
+  <fct>          <dbl>           <dbl>
+1 [2.72,3.3]      3.11           0.2  
+2 (3.3,3.44]      3.39           0.2  
+3 (3.44,3.58]     3.54           0.75 
+4 (3.58,3.7]      3.65           0.333
+5 (3.7,3.87]      3.79           0.889
+6 (3.87,3.97]     3.91           1    
+\end{verbatim}
+
+Here we are plotting \(y\) as a function of \(x\), where that function
+is
+
+\begin{equation}
+\hat{p}(X) = \widehat{\text{Pr}}(Y=1|X) = \frac{\exp(\hat{\beta}_0 + \hat{\beta}_1 x)}{1 + \exp(\hat{\beta}_0 + \hat{\beta}_1 x)}
+\end{equation}
+
+Note that the left hand side is the expected probability \(y\) of being
+accepted to medical school.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-16}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called \texttt{data\_space} for
+  \texttt{acceptance\_rate} as a function of \texttt{mean\_GPA} using
+  the binned data in \texttt{MedGPA\_binned}. Use \texttt{geom\_line()}
+  to connect the points.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# binned points and line}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_binned, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ mean_GPA, }\DataTypeTok{y =}\NormalTok{ acceptance_rate)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-52-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Augment the model \texttt{mod}. Create predictions on the scale of the
+  response variable by using the \texttt{type.predict} argument.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# augmented model}
+\NormalTok{MedGPA_plus <-}\StringTok{ }\NormalTok{mod }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{augment}\NormalTok{(}\DataTypeTok{type.predict =} \StringTok{"response"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_line()} to illustrate the model through the fitted
+  values.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# logistic model on probability scale}
+\NormalTok{data_space }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_plus, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ GPA, }\DataTypeTok{y =}\NormalTok{ .fitted), }\DataTypeTok{color =} \StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-54-1} \end{center}
+
+The logistic predictions seem to follow the binned values pretty well.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Odds scale}\label{odds-scale}
+
+For most people, the idea that we could estimate the probability of
+being admitted to medical school based on undergraduate GPA is fairly
+intuitive. However, thinking about how the probability changes as a
+function of GPA is complicated by the non-linear logistic curve. By
+translating the response from the probability scale to the
+\href{https://en.wikipedia.org/wiki/Odds}{odds} scale, we make the right
+hand side of our equation easier to understand.
+
+If the probability of getting accepted is \(y\), then the odds are
+\(y/(1-y)\). Expressions of probabilities in terms of odds are common in
+many situations, perhaps most notably gambling.
+
+Here we are plotting \(y\)/(\(1-y\))as a function of \(x\), where that
+function is
+
+\begin{equation}
+\text{odds}(\hat{y})=\frac{\hat{y}}{1 - \hat{y}}=\exp(\hat{\beta}_0 + \hat{\beta}_1 \cdot x)
+\end{equation}
+
+Note that the left hand side is the expected odds of being accepted to
+medical school. The right hand side is now a familiar exponential
+function of \(x\).
+
+The \texttt{MedGPA\_binned} data frame contains the data for each GPA
+bin, while the \texttt{MedGPA\_plus} data frame records the original
+observations after being \texttt{augment()}-ed by \texttt{mod}.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-17}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Add a variable called \texttt{odds} to \texttt{MedGPA\_binned} that
+  records the odds of being accepted to medical school for each bin.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute odds for bins}
+\NormalTok{MedGPA_binned <-}\StringTok{ }\NormalTok{MedGPA_binned }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{odds =}\NormalTok{ acceptance_rate }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{acceptance_rate))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called \texttt{data\_space} for \texttt{odds} as
+  a function of \texttt{mean\_GPA} using the binned data in
+  \texttt{MedGPA\_binned}. Connect the points with
+  \texttt{geom\_line()}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# plot binned odds}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_binned, }
+                     \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ mean_GPA, }\DataTypeTok{y =}\NormalTok{ odds)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-56-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Add a variable called \texttt{odds\_hat} to \texttt{MedGPA\_plus} that
+  records the predicted odds of being accepted for each observation.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute odds for observations}
+\NormalTok{MedGPA_plus <-}\StringTok{ }\NormalTok{MedGPA_plus }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{odds_hat =}\NormalTok{ .fitted }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{.fitted))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_line()} to illustrate the model through the fitted
+  values. Note that you should be plotting the \(\hat{odds}\)'s.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# logistic model on odds scale}
+\NormalTok{data_space }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_plus, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ GPA, }\DataTypeTok{y =}\NormalTok{ odds_hat), }\DataTypeTok{color =} \StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-58-1} \end{center}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Log-odds scale}\label{log-odds-scale}
+
+Previously, we considered two formulations of logistic regression
+models:
+
+\begin{itemize}
+\item
+  on the probability scale, the units are easy to interpret, but the
+  function is non-linear, which makes it hard to understand
+\item
+  on the odds scale, the units are harder (but not impossible) to
+  interpret, and the function is exponential, which makes it harder (but
+  not impossible) to interpret
+\end{itemize}
+
+We'll now add a third formulation:
+
+\begin{itemize}
+\tightlist
+\item
+  on the log-odds scale, the units are nearly impossible to interpret,
+  but the function is linear, which makes it easy to understand As you
+  can see, none of these three is uniformly superior. Most people tend
+  to interpret the fitted values on the probability scale and the
+  function on the log-odds scale. The interpretation of the coefficients
+  is most commonly done on the odds scale. Recall that we interpreted
+  our slope coefficient \(\beta_1\) in linear regression as the expected
+  change in \(y\) given a one unit change in \(x\). On the probability
+  scale, the function is non-linear and so this approach won't work. On
+  the log-odds, the function is linear, but the units are not
+  interpretable (what does the log of the odds mean??). However, on the
+  odds scale, a one unit change in \(x\) leads to the odds being
+  multiplied by a factor of \(\hat{\beta_1}\). To see why, we form the
+  odds ratio:
+\end{itemize}
+
+\begin{equation}
+\text{OR}=\frac{\text{odds}(\hat{y}|x + 1)}{\text{odds}(\hat{y}|x)} = \exp \hat{\beta}_1
+\end{equation}
+
+Thus, the exponentiated coefficient \(\beta_1\) tells us how the
+expected odds change for a one unit increase in the explanatory
+variable. It is tempting to interpret this as a change in the expected
+probability, but this is wrong and can lead to nonsensical predictions
+(e.g.~expected probabilities greater than 1).
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-18}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Add a variable called \texttt{log\_odds} to \texttt{MedGPA\_binned}
+  that records the odds of being accepted for each bin. Recall that
+  \(odds(p) = p/(1-p)\).
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute log odds for bins}
+\NormalTok{MedGPA_binned <-}\StringTok{ }\NormalTok{MedGPA_binned }\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{log_odds =} \KeywordTok{log}\NormalTok{(acceptance_rate }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{acceptance_rate)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a scatterplot called \texttt{data\_space} for
+  \texttt{log\_odds} as a function of \texttt{mean\_GPA} using the
+  binned data in \texttt{MedGPA\_binned}. Use \texttt{geom\_line} to
+  connect the points.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# plot binned log odds}
+\NormalTok{data_space <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_binned, }
+\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ log_odds, }\DataTypeTok{x =}\NormalTok{ mean_GPA)) }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_line}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{theme_bw}\NormalTok{()}
+\NormalTok{data_space}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-60-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Add a variable called \texttt{log\_odds\_hat} to \texttt{MedGPA\_plus}
+  that records the predicted odds of being accepted for each
+  observation.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# compute log odds for observations}
+\NormalTok{MedGPA_plus <-}\StringTok{ }\NormalTok{MedGPA_plus }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{log_odds_hat =} \KeywordTok{log}\NormalTok{(.fitted }\OperatorTok{/}\StringTok{ }\NormalTok{(}\DecValTok{1} \OperatorTok{-}\StringTok{ }\NormalTok{.fitted)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{geom\_line()} to illustrate the model through the fitted
+  values. Note that you should be plotting the
+  \(\widehat{\text{odds}}\)'s.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# logistic model on log odds scale}
+\NormalTok{data_space }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ MedGPA_plus, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ GPA, }\DataTypeTok{y =}\NormalTok{ log_odds_hat), }\DataTypeTok{color =} \StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-62-1} \end{center}
+
+When you're on the log-odds scale, your model is a simple linear
+function.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Interpretation of logistic
+regression}\label{interpretation-of-logistic-regression}
+\addcontentsline{toc}{subsection}{Interpretation of logistic regression}
+
+The fitted coefficient \(\hat\beta_1\) from the medical school logistic
+regression model is 5.45. The exponential of this is 233.73.
+
+Donald's GPA is 2.9, and thus the model predicts that the probability of
+him getting into medical school is 3.26\%. The odds of Donald getting
+into medical school are 0.0337, or---phrased in gambling terms---29.6:1.
+If Donald hacks the school's registrar and changes his GPA to 3.9, then
+which of the following statements is \textbf{FALSE}:
+
+\begin{itemize}
+\item
+  His expected odds of getting into medical school improve to 7.8833 (or
+  about 9:8).
+\item
+  His expected probability of getting into medical school improves to
+  88.7\%.
+\item
+  His expected log-odds of getting into medical school improve by 5.45.
+\item
+  \textbf{His expected probability of getting into medical school
+  improves to 7.9\%.} This is a FALSE statement.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Making probabilistic
+predictions}\label{making-probabilistic-predictions}
+
+Just as we did with linear regression, we can use our logistic
+regression model to make predictions about new observations. In this
+exercise, we will use the \texttt{newdata} argument to the
+\texttt{augment()} function from the \texttt{broom} package to make
+predictions about students who were not in our original data set. These
+predictions are sometimes called \emph{out-of-sample}.
+
+Following our previous discussion about scales, with logistic regression
+it is important that we specify on which scale we want the predicted
+values. Although the default is \texttt{link} -- which uses the log-odds
+scale -- we want our predictions on the probability scale, which is the
+scale of the \texttt{response} variable. The \texttt{type.predict}
+argument to \texttt{augment()} controls this behavior.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-19}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Create a new data frame which has one variable called \texttt{GPA} and
+  one row, with the value 3.51.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# create new data frame}
+\NormalTok{new_data <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{GPA =} \FloatTok{3.51}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{augment()} to find the expected probability of admission
+  to medical school for a student with a GPA of 3.51.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# make predictions}
+\KeywordTok{augment}\NormalTok{(mod, }\DataTypeTok{newdata =}\NormalTok{ new_data, }\DataTypeTok{type.predict =} \StringTok{"response"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+# A tibble: 1 x 3
+    GPA .fitted .se.fit
+  <dbl>   <dbl>   <dbl>
+1  3.51   0.484  0.0834
+\end{verbatim}
+
+By framing your prediction as a probability you can show how likely it
+is that this student will get admitted to medical school.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Making binary predictions}\label{making-binary-predictions}
+
+Naturally, we want to know how well our model works. Did it predict
+acceptance for the students who were actually accepted to medical
+school? Did it predict rejections for the student who were not admitted?
+These types of predictions are called in-sample. One common way to
+evaluate models with a binary response is with a
+\href{https://en.wikipedia.org/wiki/Confusion_matrix}{confusion matrix}.
+{[}Yes, that is actually what it is called!{]}
+
+However, note that while our response variable is binary, our fitted
+values are probabilities. Thus, we have to round them somehow into
+binary predictions. While the probabilities convey more information, we
+might ultimately have to make a decision, and so this rounding is common
+in practice. There are many different ways to round, but for simplicity
+we will predict admission if the fitted probability is greater than 0.5,
+and rejection otherwise.
+
+First, we'll use \texttt{augment()} to make the predictions, and then
+\texttt{mutate()} and \texttt{round()} to convert these probabilities
+into binary decisions. Then we will form the confusion matrix using the
+\texttt{table()} function. \texttt{table()} will compute a 2-way table
+when given a data frame with two categorical variables, so we will first
+use \texttt{select()} to grab only those variables.
+
+You will find that this model made only 15 mistakes on these 55
+observations, so it is nearly 73\% accurate.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-20}
+\addcontentsline{toc}{subsection}{Exercise}
+
+The model object \texttt{mod} is already in your workspace.
+
+\begin{itemize}
+\tightlist
+\item
+  Create a data frame with the actual observations, and their fitted
+  probabilities, and add a new column with the binary decision by
+  rounding the fitted probabilities.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# data frame with binary predictions}
+\NormalTok{tidy_mod <-}\StringTok{ }\KeywordTok{augment}\NormalTok{(mod, }\DataTypeTok{type.predict =} \StringTok{"response"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{Acceptance_hat =} \KeywordTok{round}\NormalTok{(.fitted)) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{itemize}
+\tightlist
+\item
+  Compute the confusion matrix between the actual and predicted
+  acceptance.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# confusion matrix}
+\NormalTok{tidy_mod }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(Acceptance, Acceptance_hat) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{table}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+          Acceptance_hat
+Acceptance  0  1
+         0 16  9
+         1  6 24
+\end{verbatim}
+
+\chapter{Case Study: Italian restaurant in
+NYC}\label{case-study-italian-restaurant-in-nyc}
+
+Explore the relationship between price and the quality of food, service,
+and decor for Italian restaurants in NYC.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exploratory data analysis}\label{exploratory-data-analysis}
+\addcontentsline{toc}{subsection}{Exploratory data analysis}
+
+Multiple regression can be an effective technique for understanding how
+a response variable changes as a result of changes to more than one
+explanatory variable. But it is not magic -- understanding the
+relationships among the explanatory variables is also necessary, and
+will help us build a better model. This process is often called
+\href{https://en.wikipedia.org/wiki/Exploratory_data_analysis}{exploratory
+data analysis} (EDA) and is covered in another DataCamp course.
+
+One quick technique for jump-starting EDA is to examine all of the
+pairwise scatterplots in your data. This can be achieved using the
+\texttt{pairs()} function. Look for variables in the \texttt{nyc} data
+set that are strongly correlated, as those relationships will help us
+check for
+\href{https://en.wikipedia.org/wiki/Multicollinearity}{multicollinearity}
+later on.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Excercise}\label{excercise}
+\addcontentsline{toc}{subsection}{Excercise}
+
+Which pairs of variables appear to be strongly correlated?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{pairs}\NormalTok{(nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-68-1} \end{center}
+
+\begin{itemize}
+\item
+  Case and Decor.
+\item
+  Restaurant and Price.
+\item
+  \textbf{Price and Food.}
+\item
+  Price and East.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{SLR models}\label{slr-models}
+
+Based on your knowledge of the restaurant industry, do you think that
+the quality of the food in a restaurant is an important determinant of
+the price of a meal at that restaurant? It would be hard to imagine that
+it wasn't. We'll start our modeling process by plotting and fitting a
+model for \texttt{Price} as a function of \texttt{Food}.
+
+On your own, interpret these coefficients and examine the fit of the
+model. What does the coefficient of \texttt{Food} mean in plain English?
+``Each additional rating point of food quality is associated with
+a\ldots{}''
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-21}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{ggplot} to make a scatter plot for \texttt{Price} as a
+  function of \texttt{Food}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Price by Food plot}
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ nyc, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Food, }\DataTypeTok{y =}\NormalTok{ Price)) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{theme_bw}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{MultLogSC_files/figure-latex/unnamed-chunk-69-1} \end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a simple linear regression model for
+  \texttt{Price} as a function of \texttt{Food}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Price by Food model}
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food, data = nyc)
+
+Coefficients:
+(Intercept)         Food  
+    -17.832        2.939  
+\end{verbatim}
+
+What does the simple linear model say about how food quality affects
+price?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Parallel lines with
+location}\label{parallel-lines-with-location}
+
+In real estate, a common mantra is that the three most important factors
+in determining the price of a property are ``location, location, and
+location.'' If location drives up property values and rents, then we
+might imagine that location would increase a restaurant's costs, which
+would result in them having higher prices. In many parts of New York,
+the east side (east of 5th Avenue) is more developed and perhaps more
+expensive. {[}This is increasingly less true, but was more true at the
+time these data were collected.{]}
+
+Let's expand our model into a parallel slopes model by including the
+East variable in addition to Food.
+
+Use \texttt{lm()} to fit a parallel slopes model for \texttt{Price} as a
+function of \texttt{Food} and \texttt{East}. Interpret the coefficients
+and the fit of the model. Can you explain the meaning of the coefficient
+on \texttt{East} in simple terms? Did the coefficient on \texttt{Food}
+change from the previous model? If so, why? Did it change by a lot or
+just a little?
+
+Identify the statement that is \emph{FALSE}:
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{East, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food + East, data = nyc)
+
+Coefficients:
+(Intercept)         Food         East  
+    -17.430        2.875        1.459  
+\end{verbatim}
+
+\begin{itemize}
+\item
+  Each additional rating point of food quality is associated with a
+  \$2.88 increase in the expected price of meal, after controlling for
+  location.
+\item
+  The premium for an Italian restaurant in NYC associated with being on
+  the east side of 5th Avenue is \$1.46, after controlling for the
+  quality of the food.
+\item
+  \textbf{The change in the coefficient of food from \$2.94 in the
+  simple linear model to \$2.88 in this model has profound practical
+  implications for restaurant owners.}
+\item
+  None of the above.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{A plane in 3D}\label{a-plane-in-3d}
+
+One reason that many people go to a restaurant---apart from the
+food---is that they don't have to cook or clean up. Many people
+appreciate the experience of being waited upon, and we can all agree
+that the quality of the service at restaurants varies widely. Are people
+willing to pay more for better restaurant \texttt{Service}? More
+interestingly, are they willing to pay more for better service, after
+controlling for the quality of the food?
+
+Multiple regression gives us a way to reason about these questions. Fit
+the model with \texttt{Food} and \texttt{Service} and interpret the
+coefficients and fit. Did the coefficient on Food change from the
+previous model? What do the coefficients on \texttt{Food} and
+\texttt{Service} tell you about how these restaurants set prices?
+
+Next, let's visually assess our model using \texttt{plotly}. The
+\texttt{x} and \texttt{y} vectors, as well as the \texttt{plane} matrix,
+have been created for you.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hmod <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\KeywordTok{summary}\NormalTok{(hmod)}\OperatorTok{$}\NormalTok{coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+              Estimate Std. Error   t value     Pr(>|t|)
+(Intercept) -21.158582  5.6651431 -3.734872 2.583345e-04
+Food          1.495369  0.4462060  3.351297 9.971979e-04
+Service       1.704101  0.4184986  4.071939 7.220788e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{16}\NormalTok{, }\DecValTok{25}\NormalTok{, }\DataTypeTok{length =} \DecValTok{50}\NormalTok{)}
+\NormalTok{y <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{14}\NormalTok{, }\DecValTok{24}\NormalTok{, }\DataTypeTok{length =} \DecValTok{50}\NormalTok{)}
+\NormalTok{plane <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\OperatorTok{-}\FloatTok{21.158582} \OperatorTok{+}\StringTok{ }\FloatTok{1.495369}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}\StringTok{ }\FloatTok{1.704101}\OperatorTok{*}\NormalTok{b\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-22}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a multiple regression model for
+  \texttt{Price} as a function of \texttt{Food} and \texttt{Service}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# fit model}
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food + Service, data = nyc)
+
+Coefficients:
+(Intercept)         Food      Service  
+    -21.159        1.495        1.704  
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{plot\_ly} to draw 3D scatterplot for Price as a function
+  of \texttt{Food} and \texttt{Service} by mapping the \texttt{z}
+  variable to the response and the \texttt{x} and \texttt{y} variables
+  to the explanatory variables. Place the food quality on the \(x\)-axis
+  and service rating on the \(y\)-axis.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(plotly)}
+\CommentTok{# draw 3D scatterplot}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{plot_ly}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ nyc, }\DataTypeTok{z =} \OperatorTok{~}\StringTok{ }\NormalTok{Price, }\DataTypeTok{x =} \OperatorTok{~}\StringTok{ }\NormalTok{Food, }\DataTypeTok{y =} \OperatorTok{~}\StringTok{ }\NormalTok{Service, }\DataTypeTok{opacity =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_markers}\NormalTok{() }
+\NormalTok{p}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{htmlwidget-3423e12707dfd0ca6570}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{add\_surface()} to draw a plane through the cloud of
+  points using the object \texttt{plane}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# draw a plane}
+\NormalTok{p }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\StringTok{ }\NormalTok{plane, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{htmlwidget-b38372eee96283519be5}{}
+
+Is it surprising how service affects the price of a meal?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Parallel planes with
+location}\label{parallel-planes-with-location}
+
+We have explored models that included the quality of both food and
+service, as well as location, but we haven't put these variables all
+into the same model. Let's now build a parallel planes model that
+incorporates all three variables.
+
+Examine the coefficients closely. Do they make sense based on what you
+understand about these data so far? How did the coefficients change from
+the previous models that you fit?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-23}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a parallel planes model for \texttt{Price} as
+  a function of \texttt{Food}, \texttt{Service}, and \texttt{East}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Price by Food and Service and East}
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service }\OperatorTok{+}\StringTok{ }\NormalTok{East, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food + Service + East, data = nyc)
+
+Coefficients:
+(Intercept)         Food      Service         East  
+   -20.8155       1.4863       1.6647       0.9649  
+\end{verbatim}
+
+Does it seem like location has a big impact on price?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Interpretation of location
+coefficient}\label{interpretation-of-location-coefficient}
+\addcontentsline{toc}{subsection}{Interpretation of location
+coefficient}
+
+The fitted coefficients from the parallel planes model are listed below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service }\OperatorTok{+}\StringTok{ }\NormalTok{East, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food + Service + East, data = nyc)
+
+Coefficients:
+(Intercept)         Food      Service         East  
+   -20.8155       1.4863       1.6647       0.9649  
+\end{verbatim}
+
+Which of the following statements is \textbf{FALSE}?
+
+Reason about the magnitude of the \texttt{East} coefficient.
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  The premium for being on the East side of 5th Avenue is just less than
+  a dollar, after controlling for the quality of food and service.
+\item
+  The impact of location is relatively small, since one additional
+  rating point of either food or service would result in a higher
+  expected price than moving a restaurant from the West side to the East
+  side.
+\item
+  \textbf{The expected price of a meal on the East side is about 96\% of
+  the cost of a meal on the West side, after controlling for the quality
+  of food and service.}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Impact of location}\label{impact-of-location}
+
+The impact of location brings us to a modeling question: should we keep
+this variable in our model? In a later course, you will learn how we can
+conduct formal hypothesis tests to help us answer that question. In this
+course, we will focus on the size of the effect. Is the impact of
+location big or small?
+
+One way to think about this would be in terms of the practical
+significance. Is the value of the coefficient large enough to make a
+difference to your average person? The units are in dollars so in this
+case this question is not hard to grasp.
+
+Another way is to examine the impact of location in the context of the
+variability of the other variables. We can do this by building our
+parallel planes in 3D and seeing how far apart they are. Are the planes
+close together or far apart? Does the \texttt{East} variable clearly
+separate the data into two distinct groups? Or are the points all mixed
+up together?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modJ <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service }\OperatorTok{+}\StringTok{ }\NormalTok{East, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\KeywordTok{summary}\NormalTok{(modJ)}\OperatorTok{$}\NormalTok{coef}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+               Estimate Std. Error    t value     Pr(>|t|)
+(Intercept) -20.8154761  5.6843188 -3.6619121 0.0003373782
+Food          1.4862725  0.4467122  3.3271368 0.0010831115
+Service       1.6646884  0.4214169  3.9502175 0.0001157434
+East          0.9648814  1.1363317  0.8491195 0.3970525764
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plane0 <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\OperatorTok{-}\FloatTok{20.8154761} \OperatorTok{+}\StringTok{ }\FloatTok{1.4862725}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}\StringTok{ }\FloatTok{1.6646884}\OperatorTok{*}\NormalTok{b }\OperatorTok{+}\StringTok{ }\FloatTok{0.9648814}\NormalTok{\})}
+\NormalTok{plane1 <-}\StringTok{ }\KeywordTok{outer}\NormalTok{(x, y, }\ControlFlowTok{function}\NormalTok{(a, b)\{}\OperatorTok{-}\FloatTok{20.8154761} \OperatorTok{+}\StringTok{ }\FloatTok{1.4862725}\OperatorTok{*}\NormalTok{a }\OperatorTok{+}\StringTok{ }\FloatTok{1.6646884}\OperatorTok{*}\NormalTok{b\})}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\subsection*{Exercise}\label{exercise-24}
+\addcontentsline{toc}{subsection}{Exercise}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{plot\_ly} to draw 3D scatterplot for \texttt{Price} as a
+  function of \texttt{Food}, \texttt{Service}, and \texttt{East} by
+  mapping the \texttt{z} variable to the response and the \texttt{x} and
+  \texttt{y} variables to the numeric explanatory variables. Use color
+  to indicate the value of \texttt{East}. Place \texttt{Food} on the
+  \(x\)-axis and \texttt{Service} on the \(y\)-axis.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(plotly)}
+\CommentTok{# draw 3D scatterplot}
+\NormalTok{p <-}\StringTok{ }\KeywordTok{plot_ly}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ nyc, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{Price, }\DataTypeTok{x =} \OperatorTok{~}\NormalTok{Food, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{Service, }\DataTypeTok{opacity =} \FloatTok{0.6}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_markers}\NormalTok{(}\DataTypeTok{color =} \OperatorTok{~}\KeywordTok{factor}\NormalTok{(East)) }
+\NormalTok{p}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{htmlwidget-9a853aba44393acce257}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Use \texttt{add\_surface()} (twice) to draw two planes through the
+  cloud of points, one for restaurants on the West side and another for
+  restaurants on the East side. Use the objects \texttt{plane0} and
+  \texttt{plane1}.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# draw two planes}
+\NormalTok{p }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{plane0, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{add_surface}\NormalTok{(}\DataTypeTok{x =} \OperatorTok{~}\NormalTok{x, }\DataTypeTok{y =} \OperatorTok{~}\NormalTok{y, }\DataTypeTok{z =} \OperatorTok{~}\NormalTok{plane1, }\DataTypeTok{showscale =} \OtherTok{FALSE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{htmlwidget-03bd35ff25d219ccbead}{}
+
+How does this visualization relate to the model coefficients you found
+in the last exercise?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\section{Full model}\label{full-model}
+
+One variable we haven't considered is \texttt{Decor}. Do people, on
+average, pay more for a meal in a restaurant with nicer decor? If so,
+does it still matter after controlling for the quality of food, service,
+and location?
+
+By adding a third numeric explanatory variable to our model, we lose the
+ability to visualize the model in even three dimensions. Our model is
+now a hyperplane -- or rather, parallel hyperplanes -- and while we
+won't go any further with the geometry, know that we can continue to add
+as many variables to our model as we want. As humans, our spatial
+visualization ability taps out after three numeric variables (maybe you
+could argue for four, but certainly no further), but neither the
+mathematical equation for the regression model, nor the formula
+specification for the model in R, is bothered by the higher
+dimensionality.
+
+Use \texttt{lm()} to fit a parallel planes model for \texttt{Price} as a
+function of \texttt{Food}, \texttt{Service}, \texttt{Decor}, and
+\texttt{East}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{lm}\NormalTok{(Price }\OperatorTok{~}\StringTok{ }\NormalTok{Food }\OperatorTok{+}\StringTok{ }\NormalTok{Service }\OperatorTok{+}\StringTok{ }\NormalTok{Decor }\OperatorTok{+}\StringTok{ }\NormalTok{East, }\DataTypeTok{data =}\NormalTok{ nyc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+
+Call:
+lm(formula = Price ~ Food + Service + Decor + East, data = nyc)
+
+Coefficients:
+(Intercept)         Food      Service        Decor         East  
+ -24.023800     1.538120    -0.002727     1.910087     2.068050  
+\end{verbatim}
+
+Notice the dramatic change in the value of the \texttt{Service}
+coefficient.
+
+Which of the following interpretations is invalid?
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
+
+\begin{itemize}
+\item
+  Since the quality of food, decor, and service were all strongly
+  correlated, multicollinearity is the likely explanation.
+\item
+  Once we control for the quality of food, decor, and location, the
+  additional information conveyed by service is negligible.
+\item
+  \textbf{Service is not an important factor in determining the price of
+  a meal.} This is false!
+\item
+  None of the above.
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
 
 \bibliography{book.bib,packages.bib}
 
