@@ -1,6 +1,6 @@
 --- 
 title: '[Multiple and Logistic Regression](https://www.datacamp.com/courses/multiple-and-logistic-regression)'
-author: '[Your Name Here](https://your_username.github.io/)'
+author: '[Seth Harrison](https://your_username.github.io/)'
 date: 'Last compiled: `r format(Sys.time(), "%b %d, %Y")`'
 bibliography:
 - book.bib
