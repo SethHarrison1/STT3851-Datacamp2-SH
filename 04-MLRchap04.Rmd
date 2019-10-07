@@ -1,6 +1,6 @@
 # Logistic Regression
 
-n this chapter you’ll learn about using logistic regression, a generalized linear model (GLM), to predict a binary outcome and classify observations.
+In this chapter you’ll learn about using logistic regression, a generalized linear model (GLM), to predict a binary outcome and classify observations.
 
 -------
 
